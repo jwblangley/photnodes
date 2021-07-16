@@ -111,5 +111,6 @@ class Connection(QtWidgets.QGraphicsPathItem):
                                self.sourcePos.y() + dy * CURVE2)
         ctrl2 = QtCore.QPointF(self.sourcePos.x() + dx * CURVE3,
                                self.sourcePos.y() + dy * CURVE4)
+
         path.cubicTo(ctrl1, ctrl2, self.targetPos)
         self.setPath(path)

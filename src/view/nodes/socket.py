@@ -131,7 +131,6 @@ class Socket(QtWidgets.QGraphicsItem):
 
         if not connection.canCreate():
             connection.destroy()
-            print("No connection")
             return
 
         self.connections.append(connection)

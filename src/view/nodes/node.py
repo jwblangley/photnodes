@@ -24,7 +24,7 @@ class Node(QtWidgets.QGraphicsItem):
         self.fillColor = QtGui.QColor(220, 220, 220)
 
         self.header = None
-        self.sockets = []
+        self.sockets = {}
 
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
@@ -59,7 +59,7 @@ class Node(QtWidgets.QGraphicsItem):
     def mouseMoveEvent(self, event):
         for node in self.scene().selectedItems():
             if isinstance(node, Node):
-                for socket in node.sockets:
+                for socket in node.sockets.values():
                     for connection in socket.connections:
                         connection.updatePath()
         super().mouseMoveEvent(event)
@@ -71,14 +71,14 @@ class Node(QtWidgets.QGraphicsItem):
         self.updateSize()
 
     def addSocket(self, socket):
-        assert socket.name not in [s.name for s in self.sockets], "Duplicate socket name"
+        assert socket.name not in self.sockets, "Duplicate socket name"
 
         yOffset = sum([s.h + s.margin for s in self.sockets]) + self.header.h + self.margin
         xOffset = self.margin / 2
 
-        self.sockets.append(socket)
         socket.setParentItem(self)
         socket.node = self
+        self.sockets[socket.name] = socket
         self.updateSize()
 
         if socket.isInput:
@@ -87,9 +87,9 @@ class Node(QtWidgets.QGraphicsItem):
             socket.setPos(self.boundingRect().right() + xOffset, yOffset)
 
     def updateSize(self):
-        totalHeight = self.header.h + self.margin + sum([s.h + s.margin for s in self.sockets])
+        totalHeight = self.header.h + self.margin + sum([s.h + s.margin for s in self.sockets.values()])
         self.h = totalHeight
 
         headerWidth = self.margin + getTextSize(self.header.text).width()
-        maxWidth = max([headerWidth] + [s.w + s.margin + getTextSize(s.displayName).width() for s in self.sockets])
+        maxWidth = max([headerWidth] + [s.w + s.margin + getTextSize(s.displayName).width() for s in self.sockets.values()])
         self.w = maxWidth

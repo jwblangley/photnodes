@@ -75,7 +75,6 @@ class BaseNode(QtWidgets.QGraphicsItem):
         assert socket.name not in self.sockets, "Duplicate socket name"
 
         yOffset = self.getHeight()
-        xOffset = self.margin / 2
 
         socket.setParentItem(self)
         socket.node = self
@@ -92,9 +91,8 @@ class BaseNode(QtWidgets.QGraphicsItem):
         self.h = self.getHeight()
         self.w = self.getWidth()
 
-        xOffset = self.margin / 2
         for socket in self.sockets.values():
             if socket.isInput:
-                socket.setX(self.boundingRect().left() - socket.w + xOffset)
+                socket.setX(self.boundingRect().left() - socket.w)
             else:
-                socket.setX(self.boundingRect().right() + xOffset)
+                socket.setX(self.boundingRect().right())

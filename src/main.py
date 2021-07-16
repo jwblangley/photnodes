@@ -4,11 +4,13 @@ from PySide6 import QtCore
 
 import sys
 from view.nodes.connection import Connection
+from view.nodes.flow_node import FlowNode
 from view.nodes.header import Header
 
 from view.nodes.node import BaseNode
 from view.nodes.socket import Socket
 from view.nodes.starting_node import StartingNode
+from view.nodes.terminal_node import TerminalNode
 
 def viewMouseMoveEvent(self, event):
     QtWidgets.QGraphicsView.mouseMoveEvent(self, event)
@@ -34,24 +36,21 @@ class Window(QtWidgets.QMainWindow):
 
         self.resize(600,600)
 
-    def populate(self):
-        n1 = StartingNode()
-        s1 = Socket("test1", "r", False)
-        n1.addSocket(s1)
-        s2 = Socket("test", "really big test socket", False)
-        n1.addSocket(s2)
-        self.addNode(n1)
-
-        # n2 = Node()
-        # s2 = Socket("test", "test socket", True, 1)
-        # n2.addSocket(s2)
-        # self.addNode(n2)
-
-        # s1.connectTo(s2)
-
     def addNode(self, node):
         if node not in self.scene.items():
             self.scene.addItem(node)
+
+    def populate(self):
+        n1 = StartingNode("Input file")
+        self.addNode(n1)
+
+        n2 = FlowNode("Operation")
+        n2.addSocket(Socket("in", "test in", True))
+        n2.addSocket(Socket("out", "test out", False))
+        self.addNode(n2)
+
+        n3 = TerminalNode("Output file")
+        self.addNode(n3)
 
 
 if __name__ == "__main__":

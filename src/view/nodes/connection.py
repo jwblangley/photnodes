@@ -86,8 +86,13 @@ class Connection(QtWidgets.QGraphicsPathItem):
         return (
             self.sourceSocket is not None
             and self.targetSocket is not None
-            and not self.sourceSocket.isInput
+            and (
+                    (self.sourceSocket.isInput and not self.targetSocket.isInput)
+                    or
+                    (self.targetSocket.isInput and not self.sourceSocket.isInput)
+                )
             and self.targetSocket.isInput
+            and self.sourceSocket.node != self.targetSocket.node
             and len(self.sourceSocket.connections) < self.sourceSocket.maxConnections
             and len(self.targetSocket.connections) < self.targetSocket.maxConnections
             and not self.isRepeat()

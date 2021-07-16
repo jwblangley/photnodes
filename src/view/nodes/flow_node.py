@@ -6,7 +6,7 @@ from view.nodes.socket import Socket
 class FlowNode(BaseNode):
 
     def __init__(self, title, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(title, **kwargs)
 
         self.header = Header(self, title)
         self.header.setParentItem(self)

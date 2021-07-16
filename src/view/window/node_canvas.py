@@ -1,4 +1,5 @@
 from PySide6 import QtWidgets
+from view.nodes.functional.solid_color_node import SolidColorNode
 
 from view.nodes.starting_node import StartingNode
 from view.nodes.flow_node import FlowNode
@@ -26,7 +27,7 @@ class NodeCanvas(QtWidgets.QWidget):
 
     # For testing
     def populate(self):
-        n1 = StartingNode("Input file")
+        n1 = SolidColorNode()
         self.addNode(n1)
 
         n2 = FlowNode("Operation")

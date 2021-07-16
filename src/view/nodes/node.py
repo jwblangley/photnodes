@@ -10,8 +10,10 @@ ROUNDNESS = 0
 
 class BaseNode(QtWidgets.QGraphicsItem):
 
-    def __init__(self, **kwargs):
+    def __init__(self, title, **kwargs):
         super().__init__(**kwargs)
+
+        self.title = title
 
         self.x = 0
         self.y = 0
@@ -26,6 +28,8 @@ class BaseNode(QtWidgets.QGraphicsItem):
         self.header = None
         self.sockets = {}
 
+        self.inspector_widget = QtWidgets.QWidget()
+
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
 
@@ -34,6 +38,18 @@ class BaseNode(QtWidgets.QGraphicsItem):
         self.setAcceptHoverEvents(True)
         self.setAcceptTouchEvents(True)
         self.setAcceptDrops(True)
+
+    def itemChange(self, change, value):
+        if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
+            inspector = QtWidgets.QApplication.instance().window.inspector
+            if value:
+                inspector.layout.addWidget(self.inspector_widget)
+                inspector.titleLabel.setText(f"Inspector: {self.title}")
+            else:
+                self.inspector_widget.setParent(None)
+                inspector.titleLabel.setText("Inspector")
+
+        return super().itemChange(change, value)
 
     def boundingRect(self):
         return QtCore.QRect(self.x, self.y, self.w, self.h)

@@ -6,6 +6,6 @@ from view.window.main_window import Window
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    window = Window()
-    window.show()
+    app.window = Window()
+    app.window.show()
     sys.exit(app.exec_())

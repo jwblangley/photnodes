@@ -1,16 +1,25 @@
 from PySide6 import QtCore, QtWidgets, QtGui
 
-class Inspector(QtWidgets.QWidget):
+class Inspector(QtWidgets.QScrollArea):
     def __init__(self):
         super().__init__()
 
-        self.layout = QtWidgets.QVBoxLayout()
-        self.layout.setSpacing(10)
-        self.setLayout(self.layout)
+        self.setAlignment(QtCore.Qt.AlignTop)
+
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
 
         self.setFixedWidth(400)
 
-        self.label = QtWidgets.QLabel("Inspector")
-        self.layout.addWidget(self.label)
+        self.widget = QtWidgets.QWidget()
+        self.setWidget(self.widget)
+        self.setWidgetResizable(True)
 
-        self.layout.addStretch()
+        self.layout = QtWidgets.QVBoxLayout()
+        self.layout.setAlignment(QtCore.Qt.AlignTop)
+        self.layout.setSpacing(10)
+        self.widget.setLayout(self.layout)
+
+
+        self.titleLabel = QtWidgets.QLabel("Inspector")
+        self.layout.addWidget(self.titleLabel)

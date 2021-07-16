@@ -3,6 +3,7 @@ from PySide6 import QtGui
 from PySide6 import QtCore
 
 import sys
+from view.nodes.header import Header
 
 from view.nodes.node import Node
 
@@ -27,6 +28,8 @@ class Window(QtWidgets.QMainWindow):
 
     def populate(self):
         n = Node()
+        h = Header(n, "test node")
+        n.addHeader(h)
         self.addNode(n)
 
     def addNode(self, node):

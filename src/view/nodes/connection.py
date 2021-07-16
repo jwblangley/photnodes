@@ -14,6 +14,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
         super().__init__(**kwargs)
 
         self.lineColor = QtGui.QColor(10, 10, 10)
+        self.selectedColor = QtGui.QColor(0,0,255)
         self.deleteColor = QtGui.QColor(255,0,0)
         self.thickness = LINE_THICKNESS
 
@@ -26,14 +27,21 @@ class Connection(QtWidgets.QGraphicsPathItem):
         self.canDelete = False
 
         self.setAcceptHoverEvents(True)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
 
     def paint(self, painter, option, widget):
         if self.canDelete:
             self.setPen(QtGui.QPen(self.deleteColor, self.thickness))
+        elif self.isSelected():
+            self.setPen(QtGui.QPen(self.selectedColor, self.thickness))
         else:
             self.setPen(QtGui.QPen(self.lineColor, self.thickness))
+
         self.setBrush(QtCore.Qt.NoBrush)
         self.setZValue(1)
+
+        # Remove selection box
+        option.state &= ~QtWidgets.QStyle.State_Selected
         super().paint(painter, option, widget)
 
     def destroy(self):

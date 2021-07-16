@@ -17,8 +17,8 @@ class Connection(QtWidgets.QGraphicsPathItem):
         self.deleteColor = QtGui.QColor(255,0,0)
         self.thickness = LINE_THICKNESS
 
-        self.sourceSocket = None  # A Knob.
-        self.targetSocket = None  # A Knob.
+        self.sourceSocket = None
+        self.targetSocket = None
 
         self.sourcePos = QtCore.QPointF(0, 0)
         self.targetPos = QtCore.QPointF(0, 0)
@@ -33,7 +33,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
         else:
             self.setPen(QtGui.QPen(self.lineColor, self.thickness))
         self.setBrush(QtCore.Qt.NoBrush)
-        self.setZValue(1)
+        # self.setZValue(1)
         super().paint(painter, option, widget)
 
     def destroy(self):
@@ -76,10 +76,10 @@ class Connection(QtWidgets.QGraphicsPathItem):
 
     def updatePath(self):
         if self.sourceSocket is not None:
-            self.sourcePos = self.sourceSocket.mapToScene(self.sourceSocket.boundingRect().center())
+            self.sourcePos = self.sourceSocket.mapToScene(self.sourceSocket.boundingRect().right(), self.sourceSocket.boundingRect().center().y())
 
         if self.targetSocket is not None:
-            self.targetPos = self.targetSocket.mapToScene(self.targetSocket.boundingRect().center())
+            self.targetPos = self.targetSocket.mapToScene(self.targetSocket.boundingRect().left(), self.targetSocket.boundingRect().center().y())
 
         path = QtGui.QPainterPath()
         path.moveTo(self.sourcePos)

@@ -30,15 +30,21 @@ class Socket(QtWidgets.QGraphicsItem):
 
         self.node = None
         self.connections = []
+        self.highlighting = False
 
         self.setAcceptHoverEvents(True)
+
+        self.setCursor(QtCore.Qt.SizeAllCursor)
 
     def boundingRect(self):
         return QtCore.QRect(self.x, self.y, self.w, self.h)
 
     def paint(self, painter, option, widget):
         # Paint box
-        painter.setBrush(QtGui.QBrush(self.fillColor))
+        if self.highlighting:
+            painter.setBrush(QtGui.QBrush(self.highlightColor))
+        else:
+            painter.setBrush(QtGui.QBrush(self.fillColor))
         painter.setPen(QtGui.QPen(QtCore.Qt.NoPen))
 
         bbox = self.boundingRect()
@@ -56,8 +62,20 @@ class Socket(QtWidgets.QGraphicsItem):
         painter.drawText(x, y, self.displayName)
 
     def destroy(self):
-        self.node.scene().removeItem(self)
+        self.scene().removeItem(self)
+        for con in self.connections[::]:
+            con.destroy()
         del self
+
+    def hoverEnterEvent(self, event):
+        self.highlighting = True
+        self.update()
+        super().hoverEnterEvent(event)
+
+    def hoverLeaveEvent(self, event):
+        self.highlighting = False
+        self.update()
+        super().hoverEnterEvent(event)
 
     def connectTo(self, other):
         if other is self:

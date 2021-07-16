@@ -50,6 +50,9 @@ class Node(QtWidgets.QGraphicsItem):
         if self.header is not None:
             self.header.destroy()
 
+        for socket in self.sockets[::]:
+            socket.destroy()
+
         self.scene().removeItem(self)
         del self
 

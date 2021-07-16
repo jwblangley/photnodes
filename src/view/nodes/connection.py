@@ -18,6 +18,8 @@ class Connection(QtWidgets.QGraphicsPathItem):
         self.sourcePos = QtCore.QPointF(0, 0)
         self.targetPos = QtCore.QPointF(0, 0)
 
+        self.canDelete = False
+
         self.curv1 = 0.6
         self.curv3 = 0.4
 
@@ -27,7 +29,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
         self.setAcceptHoverEvents(True)
 
     def paint(self, painter, option, widget):
-        if QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:
+        if self.canDelete:
             self.setPen(QtGui.QPen(self.deleteColor, self.thickness))
         else:
             self.setPen(QtGui.QPen(self.lineColor, self.thickness))
@@ -44,11 +46,23 @@ class Connection(QtWidgets.QGraphicsPathItem):
         self.scene().removeItem(self)
         del self
 
-    def mouseMoveEvent(self, event):
+    def hoverEnterEvent(self, event):
+        if QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:
+            self.canDelete = True
+            self.setCursor(QtCore.Qt.PointingHandCursor)
+            self.update()
+
+        super().hoverEnterEvent(event)
+
+    def hoverLeaveEvent(self, event):
+        self.canDelete = False
+        self.setCursor(QtCore.Qt.ArrowCursor)
         self.update()
 
+        super().hoverLeaveEvent(event)
+
     def mousePressEvent(self, event):
-        if event.button() == QtCore.Qt.MouseButton.LeftButton and event.modifiers() == QtCore.Qt.ControlModifier:
+        if event.button() == QtCore.Qt.MouseButton.LeftButton and self.canDelete:
             self.destroy()
 
     def canCreate(self):

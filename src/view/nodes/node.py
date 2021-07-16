@@ -64,32 +64,37 @@ class Node(QtWidgets.QGraphicsItem):
                         connection.updatePath()
         super().mouseMoveEvent(event)
 
-    def addHeader(self, header):
-        self.header = header
-        self.header.node = self
-        self.header.setParentItem(self)
-        self.updateSize()
+    def getHeight(self):
+        return sum([s.h + s.margin for s in self.sockets.values() if not s.name.startswith("_")]) + self.header.h + self.margin
+
+    def getWidth(self):
+        headerWidth = self.margin + getTextSize(self.header.text).width()
+        return max([headerWidth] + [s.w + s.margin + getTextSize(s.displayName).width() for s in self.sockets.values()])
 
     def addSocket(self, socket):
         assert socket.name not in self.sockets, "Duplicate socket name"
 
-        yOffset = sum([s.h + s.margin for s in self.sockets]) + self.header.h + self.margin
+        yOffset = self.getHeight()
         xOffset = self.margin / 2
 
         socket.setParentItem(self)
         socket.node = self
         self.sockets[socket.name] = socket
-        self.updateSize()
 
         if socket.isInput:
-            socket.setPos(self.boundingRect().left() - socket.w + xOffset, yOffset)
+            socket.setY(yOffset)
         else:
-            socket.setPos(self.boundingRect().right() + xOffset, yOffset)
+            socket.setY(yOffset)
+
+        self.updateSize()
 
     def updateSize(self):
-        totalHeight = self.header.h + self.margin + sum([s.h + s.margin for s in self.sockets.values()])
-        self.h = totalHeight
+        self.h = self.getHeight()
+        self.w = self.getWidth()
 
-        headerWidth = self.margin + getTextSize(self.header.text).width()
-        maxWidth = max([headerWidth] + [s.w + s.margin + getTextSize(s.displayName).width() for s in self.sockets.values()])
-        self.w = maxWidth
+        xOffset = self.margin / 2
+        for socket in self.sockets.values():
+            if socket.isInput:
+                socket.setX(self.boundingRect().left() - socket.w + xOffset)
+            else:
+                socket.setX(self.boundingRect().right() + xOffset)

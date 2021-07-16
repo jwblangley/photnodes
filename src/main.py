@@ -8,6 +8,7 @@ from view.nodes.header import Header
 
 from view.nodes.node import Node
 from view.nodes.socket import Socket
+from view.nodes.starting_node import StartingNode
 
 def viewMouseMoveEvent(self, event):
     QtWidgets.QGraphicsView.mouseMoveEvent(self, event)
@@ -34,21 +35,19 @@ class Window(QtWidgets.QMainWindow):
         self.resize(600,600)
 
     def populate(self):
-        n1 = Node()
-        h2 = Header(n1, "test node 1")
-        n1.addHeader(h2)
-        s1 = Socket("test", "really big test socket", False)
+        n1 = StartingNode()
+        s1 = Socket("test1", "r", False)
         n1.addSocket(s1)
+        s2 = Socket("test", "really big test socket", False)
+        n1.addSocket(s2)
         self.addNode(n1)
 
-        n2 = Node()
-        h2 = Header(n2, "test node 2")
-        n2.addHeader(h2)
-        s2 = Socket("test", "test socket", True, 1)
-        n2.addSocket(s2)
-        self.addNode(n2)
+        # n2 = Node()
+        # s2 = Socket("test", "test socket", True, 1)
+        # n2.addSocket(s2)
+        # self.addNode(n2)
 
-        s1.connectTo(s2)
+        # s1.connectTo(s2)
 
     def addNode(self, node):
         if node not in self.scene.items():

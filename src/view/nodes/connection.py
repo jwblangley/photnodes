@@ -4,6 +4,11 @@ from PySide6 import QtCore
 
 LINE_THICKNESS = 2
 
+CURVE1 = 0.6
+CURVE2 = 0.2
+CURVE3 = 0.4
+CURVE4 = 0.8
+
 class Connection(QtWidgets.QGraphicsPathItem):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -19,12 +24,6 @@ class Connection(QtWidgets.QGraphicsPathItem):
         self.targetPos = QtCore.QPointF(0, 0)
 
         self.canDelete = False
-
-        self.curv1 = 0.6
-        self.curv3 = 0.4
-
-        self.curv2 = 0.2
-        self.curv4 = 0.8
 
         self.setAcceptHoverEvents(True)
 
@@ -88,9 +87,9 @@ class Connection(QtWidgets.QGraphicsPathItem):
         dx = self.targetPos.x() - self.sourcePos.x()
         dy = self.targetPos.y() - self.sourcePos.y()
 
-        ctrl1 = QtCore.QPointF(self.sourcePos.x() + dx * self.curv1,
-                               self.sourcePos.y() + dy * self.curv2)
-        ctrl2 = QtCore.QPointF(self.sourcePos.x() + dx * self.curv3,
-                               self.sourcePos.y() + dy * self.curv4)
+        ctrl1 = QtCore.QPointF(self.sourcePos.x() + dx * CURVE1,
+                               self.sourcePos.y() + dy * CURVE2)
+        ctrl2 = QtCore.QPointF(self.sourcePos.x() + dx * CURVE3,
+                               self.sourcePos.y() + dy * CURVE4)
         path.cubicTo(ctrl1, ctrl2, self.targetPos)
         self.setPath(path)

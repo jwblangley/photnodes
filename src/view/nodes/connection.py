@@ -10,15 +10,15 @@ CURVE3 = 0.4
 CURVE4 = 0.8
 
 class Connection(QtWidgets.QGraphicsPathItem):
-    def __init__(self, **kwargs):
+    def __init__(self, sourceSocket=None, targetSocket=None, **kwargs):
         super().__init__(**kwargs)
 
         self.lineColor = QtGui.QColor(10, 10, 10)
         self.deleteColor = QtGui.QColor(255,0,0)
         self.thickness = LINE_THICKNESS
 
-        self.sourceSocket = None
-        self.targetSocket = None
+        self.sourceSocket = sourceSocket
+        self.targetSocket = targetSocket
 
         self.sourcePos = QtCore.QPointF(0, 0)
         self.targetPos = QtCore.QPointF(0, 0)
@@ -33,13 +33,13 @@ class Connection(QtWidgets.QGraphicsPathItem):
         else:
             self.setPen(QtGui.QPen(self.lineColor, self.thickness))
         self.setBrush(QtCore.Qt.NoBrush)
-        # self.setZValue(1)
+        self.setZValue(1)
         super().paint(painter, option, widget)
 
     def destroy(self):
-        if self in self.sourceSocket.connections:
+        if self.sourceSocket is not None and self in self.sourceSocket.connections:
             self.sourceSocket.connections.remove(self)
-        if self in self.targetSocket.connections:
+        if self.targetSocket is not None and self in self.targetSocket.connections:
             self.targetSocket.connections.remove(self)
 
         self.scene().removeItem(self)
@@ -75,8 +75,9 @@ class Connection(QtWidgets.QGraphicsPathItem):
         )
 
     def updatePath(self):
-        if self.sourceSocket is not None:
-            self.sourcePos = self.sourceSocket.mapToScene(self.sourceSocket.boundingRect().right(), self.sourceSocket.boundingRect().center().y())
+        assert self.sourceSocket is not None, "No source socket for connection"
+
+        self.sourcePos = self.sourceSocket.mapToScene(self.sourceSocket.boundingRect().right(), self.sourceSocket.boundingRect().center().y())
 
         if self.targetSocket is not None:
             self.targetPos = self.targetSocket.mapToScene(self.targetSocket.boundingRect().left(), self.targetSocket.boundingRect().center().y())

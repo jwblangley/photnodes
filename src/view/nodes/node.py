@@ -78,6 +78,7 @@ class Node(QtWidgets.QGraphicsItem):
 
         self.sockets.append(socket)
         socket.setParentItem(self)
+        socket.node = self
         self.updateSize()
 
         if socket.isInput:

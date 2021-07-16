@@ -34,7 +34,8 @@ class Socket(QtWidgets.QGraphicsItem):
 
         self.setAcceptHoverEvents(True)
 
-        self.setCursor(QtCore.Qt.SizeAllCursor)
+        self.tempNewCon = None
+        self.lastBelow = None
 
     def boundingRect(self):
         return QtCore.QRect(self.x, self.y, self.w, self.h)
@@ -75,20 +76,63 @@ class Socket(QtWidgets.QGraphicsItem):
     def hoverLeaveEvent(self, event):
         self.highlighting = False
         self.update()
-        super().hoverEnterEvent(event)
+        super().hoverLeaveEvent(event)
 
-    def connectTo(self, other):
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            self.tempNewCon = Connection(sourceSocket=self)
+            self.tempNewCon.targetPos = event.scenePos()
+            self.tempNewCon.updatePath()
+            self.scene().addItem(self.tempNewCon)
+            self.tempNewCon.setEnabled(False)
+
+    def mouseMoveEvent(self, event):
+        if self.tempNewCon is not None:
+            self.tempNewCon.targetPos = event.scenePos()
+            self.tempNewCon.updatePath()
+
+            # Highlight socket below
+            self.tempNewCon.setVisible(False)
+            below = self.scene().itemAt(event.scenePos(), QtGui.QTransform())
+            self.tempNewCon.setVisible(True)
+            if isinstance(below, Socket) and below is not self:
+                self.lastBelow = below
+                below.highlighting = True
+                below.update()
+            else:
+                if self.lastBelow is not None:
+                    self.lastBelow.highlighting = False
+                    self.lastBelow.update()
+                    self.lastBelow = None
+
+        super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+            self.tempNewCon.setVisible(False)
+            target = self.scene().itemAt(event.scenePos(), QtGui.QTransform())
+            self.tempNewCon.setVisible(True)
+
+            if isinstance(target, Socket) and target is not self:
+                self.connectTo(target, connection=self.tempNewCon)
+                self.tempNewCon=None
+
+    def connectTo(self, other, connection=None):
         if other is self:
             return
 
-        connection = Connection()
+        if connection is None:
+            connection = Connection()
+
         connection.sourceSocket = self
         connection.targetSocket = other
 
         if not connection.canCreate():
-            raise RuntimeError("Invalid connection")
+            connection.destroy()
+            return
 
         self.connections.append(connection)
         other.connections.append(connection)
 
-        self.scene().addItem(connection)
+        if connection not in self.scene().items():
+            self.scene().addItem(connection)

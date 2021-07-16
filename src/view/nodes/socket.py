@@ -9,12 +9,13 @@ MARGIN = 5
 
 class Socket(QtWidgets.QGraphicsItem):
 
-    def __init__(self, name, displayName, isInput, **kwargs):
+    def __init__(self, name, displayName, isInput, maxConnections=float("inf"), **kwargs):
         super().__init__(**kwargs)
 
         self.name = name
         self.displayName = displayName
         self.isInput = isInput
+        self.maxConnections = maxConnections
 
         self.x = 0
         self.y = 0
@@ -66,7 +67,7 @@ class Socket(QtWidgets.QGraphicsItem):
         connection.sourceSocket = self
         connection.targetSocket = other
 
-        if not connection.isValid():
+        if not connection.canCreate():
             raise RuntimeError("Invalid connection")
 
         self.connections.append(connection)

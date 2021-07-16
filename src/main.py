@@ -44,7 +44,7 @@ class Window(QtWidgets.QMainWindow):
         n2 = Node()
         h2 = Header(n2, "test node 2")
         n2.addHeader(h2)
-        s2 = Socket("test", "test socket", True)
+        s2 = Socket("test", "test socket", True, 1)
         n2.addSocket(s2)
         self.addNode(n2)
 

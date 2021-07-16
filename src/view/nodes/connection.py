@@ -55,5 +55,12 @@ class Connection(QtWidgets.QGraphicsPathItem):
         # TODO
         del self
 
-    def isValid(self):
-        return self.sourceSocket is not None and self.targetSocket is not None
+    def canCreate(self):
+        return (
+            self.sourceSocket is not None
+            and self.targetSocket is not None
+            and not self.sourceSocket.isInput
+            and self.targetSocket.isInput
+            and len(self.sourceSocket.connections) < self.sourceSocket.maxConnections
+            and len(self.targetSocket.connections) < self.targetSocket.maxConnections
+        )

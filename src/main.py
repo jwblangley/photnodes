@@ -12,10 +12,6 @@ from view.nodes.socket import Socket
 from view.nodes.starting_node import StartingNode
 from view.nodes.terminal_node import TerminalNode
 
-def viewMouseMoveEvent(self, event):
-    QtWidgets.QGraphicsView.mouseMoveEvent(self, event)
-    if self.scene().selectedItems():
-        self.update()
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
@@ -31,7 +27,6 @@ class Window(QtWidgets.QMainWindow):
         self.scene = QtWidgets.QGraphicsScene()
 
         self.view = QtWidgets.QGraphicsView(self.scene)
-        self.view.mouseMoveEvent = lambda event: viewMouseMoveEvent(self.view, event)
         self.layout.addWidget(self.view, 0, 0)
 
         self.resize(600,600)

@@ -1,5 +1,6 @@
 from PySide6 import QtWidgets
 from view.window.image_canvas import ImageCanvas
+from view.window.inspector import Inspector
 
 from view.window.node_canvas import NodeCanvas
 
@@ -26,6 +27,9 @@ class Window(QtWidgets.QMainWindow):
 
         self.right_image_canvas = ImageCanvas(CANVAS_SIZE)
         self.layout.addWidget(self.right_image_canvas,0,1)
+
+        self.inspector = Inspector()
+        self.layout.addWidget(self.inspector, 0,2,2,1)
 
         self.showMaximized()
 

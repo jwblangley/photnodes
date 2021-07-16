@@ -84,7 +84,6 @@ class Socket(QtWidgets.QGraphicsItem):
             self.tempNewCon.targetPos = event.scenePos()
             self.tempNewCon.updatePath()
             self.scene().addItem(self.tempNewCon)
-            self.tempNewCon.setEnabled(False)
 
     def mouseMoveEvent(self, event):
         if self.tempNewCon is not None:
@@ -115,7 +114,10 @@ class Socket(QtWidgets.QGraphicsItem):
 
             if isinstance(target, Socket) and target is not self:
                 self.connectTo(target, connection=self.tempNewCon)
-                self.tempNewCon=None
+            else:
+                self.tempNewCon.destroy()
+            self.tempNewCon=None
+
 
     def connectTo(self, other, connection=None):
         if other is self:
@@ -129,6 +131,7 @@ class Socket(QtWidgets.QGraphicsItem):
 
         if not connection.canCreate():
             connection.destroy()
+            print("No connection")
             return
 
         self.connections.append(connection)

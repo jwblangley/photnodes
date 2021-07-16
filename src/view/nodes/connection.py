@@ -64,6 +64,24 @@ class Connection(QtWidgets.QGraphicsPathItem):
         if event.button() == QtCore.Qt.MouseButton.LeftButton and self.canDelete:
             self.destroy()
 
+    def _repeat_eq(self, other):
+        if not isinstance(other, Connection):
+            return False
+
+        return (
+            self.sourceSocket is not None
+            and self.targetSocket is not None
+            and other.sourceSocket is not None
+            and other.targetSocket is not None
+            and self.sourceSocket == other.sourceSocket
+            and self.targetSocket == other.targetSocket
+        )
+
+    def isRepeat(self):
+        assert self.sourceSocket is not None, "No source socket"
+        return len(list(filter(lambda o: self._repeat_eq(o), self.sourceSocket.connections))) > 0
+
+
     def canCreate(self):
         return (
             self.sourceSocket is not None
@@ -72,6 +90,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
             and self.targetSocket.isInput
             and len(self.sourceSocket.connections) < self.sourceSocket.maxConnections
             and len(self.targetSocket.connections) < self.targetSocket.maxConnections
+            and not self.isRepeat()
         )
 
     def updatePath(self):

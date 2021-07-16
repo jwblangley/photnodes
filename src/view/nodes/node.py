@@ -8,7 +8,7 @@ from view.utils import getTextSize
 MARGIN = 5
 ROUNDNESS = 0
 
-class Node(QtWidgets.QGraphicsItem):
+class BaseNode(QtWidgets.QGraphicsItem):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -58,7 +58,7 @@ class Node(QtWidgets.QGraphicsItem):
 
     def mouseMoveEvent(self, event):
         for node in self.scene().selectedItems():
-            if isinstance(node, Node):
+            if isinstance(node, BaseNode):
                 for socket in node.sockets.values():
                     for connection in socket.connections:
                         connection.updatePath()

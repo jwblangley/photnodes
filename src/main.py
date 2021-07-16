@@ -6,7 +6,7 @@ import sys
 from view.nodes.connection import Connection
 from view.nodes.header import Header
 
-from view.nodes.node import Node
+from view.nodes.node import BaseNode
 from view.nodes.socket import Socket
 from view.nodes.starting_node import StartingNode
 

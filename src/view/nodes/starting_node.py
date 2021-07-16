@@ -1,9 +1,9 @@
 from view.nodes.header import Header
-from view.nodes.node import Node
+from view.nodes.node import BaseNode
 from view.nodes.socket import Socket
 
 
-class StartingNode(Node):
+class StartingNode(BaseNode):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

@@ -3,6 +3,7 @@ from PySide6 import QtGui
 from PySide6 import QtCore
 
 import sys
+from view.nodes.connection import Connection
 from view.nodes.header import Header
 
 from view.nodes.node import Node
@@ -46,6 +47,8 @@ class Window(QtWidgets.QMainWindow):
         s2 = Socket("test", "test socket", True)
         n2.addSocket(s2)
         self.addNode(n2)
+
+        s1.connectTo(s2)
 
     def addNode(self, node):
         if node not in self.scene.items():

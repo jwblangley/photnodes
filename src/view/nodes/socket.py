@@ -1,6 +1,7 @@
 from PySide6 import QtWidgets
 from PySide6 import QtGui
 from PySide6 import QtCore
+from view.nodes.connection import Connection
 
 from view.utils import getTextSize
 
@@ -61,4 +62,14 @@ class Socket(QtWidgets.QGraphicsItem):
         if other is self:
             return
 
-        # TODO
+        connection = Connection()
+        connection.sourceSocket = self
+        connection.targetSocket = other
+
+        if not connection.isValid():
+            raise RuntimeError("Invalid connection")
+
+        self.connections.append(connection)
+        other.connections.append(connection)
+
+        self.scene().addItem(connection)

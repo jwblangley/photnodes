@@ -53,6 +53,14 @@ class Node(QtWidgets.QGraphicsItem):
         self.scene().removeItem(self)
         del self
 
+    def mouseMoveEvent(self, event):
+        for node in self.scene().selectedItems():
+            if isinstance(node, Node):
+                for socket in node.sockets:
+                    for connection in socket.connections:
+                        connection.updatePath()
+        super().mouseMoveEvent(event)
+
     def addHeader(self, header):
         self.header = header
         self.header.node = self
@@ -73,7 +81,6 @@ class Node(QtWidgets.QGraphicsItem):
             socket.setPos(self.boundingRect().left() - socket.w + xOffset, yOffset)
         else:
             socket.setPos(self.boundingRect().right() + xOffset, yOffset)
-
 
     def updateSize(self):
         totalHeight = self.header.h + self.margin + sum([s.h + s.margin for s in self.sockets])

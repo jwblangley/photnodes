@@ -6,7 +6,12 @@ import sys
 from view.nodes.header import Header
 
 from view.nodes.node import Node
+from view.nodes.socket import Socket
 
+def viewMouseMoveEvent(self, event):
+    QtWidgets.QGraphicsView.mouseMoveEvent(self, event)
+    if self.scene().selectedItems():
+        self.update()
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
@@ -22,15 +27,25 @@ class Window(QtWidgets.QMainWindow):
         self.scene = QtWidgets.QGraphicsScene()
 
         self.view = QtWidgets.QGraphicsView(self.scene)
+        self.view.mouseMoveEvent = lambda event: viewMouseMoveEvent(self.view, event)
         self.layout.addWidget(self.view, 0, 0)
 
         self.resize(600,600)
 
     def populate(self):
-        n = Node()
-        h = Header(n, "test node")
-        n.addHeader(h)
-        self.addNode(n)
+        n1 = Node()
+        h2 = Header(n1, "test node 1")
+        n1.addHeader(h2)
+        s1 = Socket("test", "really big test socket", False)
+        n1.addSocket(s1)
+        self.addNode(n1)
+
+        n2 = Node()
+        h2 = Header(n2, "test node 2")
+        n2.addHeader(h2)
+        s2 = Socket("test", "test socket", True)
+        n2.addSocket(s2)
+        self.addNode(n2)
 
     def addNode(self, node):
         if node not in self.scene.items():

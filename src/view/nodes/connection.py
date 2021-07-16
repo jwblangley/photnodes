@@ -9,6 +9,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
         super().__init__(**kwargs)
 
         self.lineColor = QtGui.QColor(10, 10, 10)
+        self.deleteColor = QtGui.QColor(255,0,0)
         self.thickness = LINE_THICKNESS
 
         self.sourceSocket = None  # A Knob.
@@ -24,6 +25,41 @@ class Connection(QtWidgets.QGraphicsPathItem):
         self.curv4 = 0.8
 
         self.setAcceptHoverEvents(True)
+
+    def paint(self, painter, option, widget):
+        if QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:
+            self.setPen(QtGui.QPen(self.deleteColor, self.thickness))
+        else:
+            self.setPen(QtGui.QPen(self.lineColor, self.thickness))
+        self.setBrush(QtCore.Qt.NoBrush)
+        self.setZValue(1)
+        super().paint(painter, option, widget)
+
+    def destroy(self):
+        if self in self.sourceSocket.connections:
+            self.sourceSocket.connections.remove(self)
+        if self in self.targetSocket.connections:
+            self.targetSocket.connections.remove(self)
+
+        self.scene().removeItem(self)
+        del self
+
+    def mouseMoveEvent(self, event):
+        self.update()
+
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.MouseButton.LeftButton and event.modifiers() == QtCore.Qt.ControlModifier:
+            self.destroy()
+
+    def canCreate(self):
+        return (
+            self.sourceSocket is not None
+            and self.targetSocket is not None
+            and not self.sourceSocket.isInput
+            and self.targetSocket.isInput
+            and len(self.sourceSocket.connections) < self.sourceSocket.maxConnections
+            and len(self.targetSocket.connections) < self.targetSocket.maxConnections
+        )
 
     def updatePath(self):
         if self.sourceSocket is not None:
@@ -44,23 +80,3 @@ class Connection(QtWidgets.QGraphicsPathItem):
                                self.sourcePos.y() + dy * self.curv4)
         path.cubicTo(ctrl1, ctrl2, self.targetPos)
         self.setPath(path)
-
-    def paint(self, painter, option, widget):
-        self.setPen(QtGui.QPen(self.lineColor, self.thickness))
-        self.setBrush(QtCore.Qt.NoBrush)
-        self.setZValue(1)
-        super().paint(painter, option, widget)
-
-    def destroy(self):
-        # TODO
-        del self
-
-    def canCreate(self):
-        return (
-            self.sourceSocket is not None
-            and self.targetSocket is not None
-            and not self.sourceSocket.isInput
-            and self.targetSocket.isInput
-            and len(self.sourceSocket.connections) < self.sourceSocket.maxConnections
-            and len(self.targetSocket.connections) < self.targetSocket.maxConnections
-        )

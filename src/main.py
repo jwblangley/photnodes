@@ -4,7 +4,7 @@ from PySide6 import QtCore
 
 import sys
 
-from node import Node
+from view.nodes.node import Node
 
 
 class Window(QtWidgets.QMainWindow):

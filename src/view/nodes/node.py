@@ -28,7 +28,7 @@ class BaseNode(QtWidgets.QGraphicsItem):
         self.header = None
         self.sockets = {}
 
-        self.inspector_widget = QtWidgets.QWidget()
+        self.inspectorWidget = QtWidgets.QWidget()
 
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
@@ -43,10 +43,10 @@ class BaseNode(QtWidgets.QGraphicsItem):
         if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
             inspector = QtWidgets.QApplication.instance().window.inspector
             if value:
-                inspector.layout.addWidget(self.inspector_widget)
+                inspector.layout.addWidget(self.inspectorWidget)
                 inspector.titleLabel.setText(f"Inspector: {self.title}")
             else:
-                self.inspector_widget.setParent(None)
+                self.inspectorWidget.setParent(None)
                 inspector.titleLabel.setText("Inspector")
 
         return super().itemChange(change, value)

@@ -1,4 +1,4 @@
-from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6 import QtCore, QtWidgets
 
 class Inspector(QtWidgets.QScrollArea):
     def __init__(self):
@@ -19,7 +19,6 @@ class Inspector(QtWidgets.QScrollArea):
         self.layout.setAlignment(QtCore.Qt.AlignTop)
         self.layout.setSpacing(10)
         self.widget.setLayout(self.layout)
-
 
         self.titleLabel = QtWidgets.QLabel("Inspector")
         self.layout.addWidget(self.titleLabel)

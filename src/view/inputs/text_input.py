@@ -1,5 +1,6 @@
 from PySide6 import QtCore, QtWidgets, QtGui
 
+
 class TextInput(QtWidgets.QWidget):
     def __init__(self, text, default, callback, validator=None):
         super().__init__()

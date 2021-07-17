@@ -8,7 +8,6 @@ from view.nodes.starting_node import StartingNode
 
 
 class SolidColorNode(StartingNode):
-
     def __init__(self, **kwargs):
         super().__init__("Solid color", **kwargs)
 
@@ -25,11 +24,25 @@ class SolidColorNode(StartingNode):
         self.iwLayout.setSpacing(10)
         self.inspectorWidget.setLayout(self.iwLayout)
 
-        self.colorPicker = ColorInput("Colour:", self.chosenColor, lambda value: setattr(self, "chosenColor", value))
+        self.colorPicker = ColorInput(
+            "Colour:",
+            self.chosenColor,
+            lambda value: setattr(self, "chosenColor", value),
+        )
         self.iwLayout.addWidget(self.colorPicker)
 
-        self.widthPicker = TextInput("Width:", self.width, lambda value: setattr(self, "width", int(value)), validator=QtGui.QIntValidator())
+        self.widthPicker = TextInput(
+            "Width:",
+            self.width,
+            lambda value: setattr(self, "width", int(value)),
+            validator=QtGui.QIntValidator(),
+        )
         self.iwLayout.addWidget(self.widthPicker)
 
-        self.heightPicker = TextInput("Height:", self.height, lambda value: setattr(self, "height", int(value)), validator=QtGui.QIntValidator())
+        self.heightPicker = TextInput(
+            "Height:",
+            self.height,
+            lambda value: setattr(self, "height", int(value)),
+            validator=QtGui.QIntValidator(),
+        )
         self.iwLayout.addWidget(self.heightPicker)

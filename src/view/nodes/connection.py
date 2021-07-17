@@ -9,13 +9,14 @@ CURVE2 = 0.2
 CURVE3 = 0.4
 CURVE4 = 0.8
 
+
 class Connection(QtWidgets.QGraphicsPathItem):
     def __init__(self, sourceSocket=None, targetSocket=None, **kwargs):
         super().__init__(**kwargs)
 
         self.lineColor = QtGui.QColor(10, 10, 10)
-        self.selectedColor = QtGui.QColor(0,0,255)
-        self.deleteColor = QtGui.QColor(255,0,0)
+        self.selectedColor = QtGui.QColor(0, 0, 255)
+        self.deleteColor = QtGui.QColor(255, 0, 0)
         self.thickness = LINE_THICKNESS
 
         self.sourceSocket = sourceSocket
@@ -87,18 +88,23 @@ class Connection(QtWidgets.QGraphicsPathItem):
 
     def isRepeat(self):
         assert self.sourceSocket is not None, "No source socket"
-        return len(list(filter(lambda o: self._repeat_eq(o), self.sourceSocket.connections))) > 0
-
+        return (
+            len(
+                list(
+                    filter(lambda o: self._repeat_eq(o), self.sourceSocket.connections)
+                )
+            )
+            > 0
+        )
 
     def canCreate(self):
         return (
             self.sourceSocket is not None
             and self.targetSocket is not None
             and (
-                    (self.sourceSocket.isInput and not self.targetSocket.isInput)
-                    or
-                    (self.targetSocket.isInput and not self.sourceSocket.isInput)
-                )
+                (self.sourceSocket.isInput and not self.targetSocket.isInput)
+                or (self.targetSocket.isInput and not self.sourceSocket.isInput)
+            )
             and self.targetSocket.isInput
             and self.sourceSocket.node != self.targetSocket.node
             and len(self.sourceSocket.connections) < self.sourceSocket.maxConnections
@@ -109,10 +115,16 @@ class Connection(QtWidgets.QGraphicsPathItem):
     def updatePath(self):
         assert self.sourceSocket is not None, "No source socket for connection"
 
-        self.sourcePos = self.sourceSocket.mapToScene(self.sourceSocket.boundingRect().right(), self.sourceSocket.boundingRect().center().y())
+        self.sourcePos = self.sourceSocket.mapToScene(
+            self.sourceSocket.boundingRect().right(),
+            self.sourceSocket.boundingRect().center().y(),
+        )
 
         if self.targetSocket is not None:
-            self.targetPos = self.targetSocket.mapToScene(self.targetSocket.boundingRect().left(), self.targetSocket.boundingRect().center().y())
+            self.targetPos = self.targetSocket.mapToScene(
+                self.targetSocket.boundingRect().left(),
+                self.targetSocket.boundingRect().center().y(),
+            )
 
         path = QtGui.QPainterPath()
         path.moveTo(self.sourcePos)
@@ -120,10 +132,12 @@ class Connection(QtWidgets.QGraphicsPathItem):
         dx = self.targetPos.x() - self.sourcePos.x()
         dy = self.targetPos.y() - self.sourcePos.y()
 
-        ctrl1 = QtCore.QPointF(self.sourcePos.x() + dx * CURVE1,
-                               self.sourcePos.y() + dy * CURVE2)
-        ctrl2 = QtCore.QPointF(self.sourcePos.x() + dx * CURVE3,
-                               self.sourcePos.y() + dy * CURVE4)
+        ctrl1 = QtCore.QPointF(
+            self.sourcePos.x() + dx * CURVE1, self.sourcePos.y() + dy * CURVE2
+        )
+        ctrl2 = QtCore.QPointF(
+            self.sourcePos.x() + dx * CURVE3, self.sourcePos.y() + dy * CURVE4
+        )
 
         path.cubicTo(ctrl1, ctrl2, self.targetPos)
         self.setPath(path)

@@ -8,8 +8,8 @@ from view.utils import getTextSize
 MARGIN = 5
 ROUNDNESS = 0
 
-class BaseNode(QtWidgets.QGraphicsItem):
 
+class BaseNode(QtWidgets.QGraphicsItem):
     def __init__(self, title, **kwargs):
         super().__init__(**kwargs)
 
@@ -59,7 +59,9 @@ class BaseNode(QtWidgets.QGraphicsItem):
         painter.setPen(QtGui.QPen(QtCore.Qt.NoPen))
 
         bbox = self.boundingRect()
-        painter.drawRoundedRect(self.x, self.y, bbox.width(), self.h, self.roundness, self.roundness)
+        painter.drawRoundedRect(
+            self.x, self.y, bbox.width(), self.h, self.roundness, self.roundness
+        )
 
     def destroy(self):
         # Destroy header
@@ -81,11 +83,27 @@ class BaseNode(QtWidgets.QGraphicsItem):
         super().mouseMoveEvent(event)
 
     def getHeight(self):
-        return sum([s.h + s.margin for s in self.sockets.values() if not s.name.startswith("_")]) + self.header.h + self.margin
+        return (
+            sum(
+                [
+                    s.h + s.margin
+                    for s in self.sockets.values()
+                    if not s.name.startswith("_")
+                ]
+            )
+            + self.header.h
+            + self.margin
+        )
 
     def getWidth(self):
         headerWidth = self.margin + getTextSize(self.header.text).width()
-        return max([headerWidth] + [s.w + s.margin + getTextSize(s.displayName).width() for s in self.sockets.values()])
+        return max(
+            [headerWidth]
+            + [
+                s.w + s.margin + getTextSize(s.displayName).width()
+                for s in self.sockets.values()
+            ]
+        )
 
     def addSocket(self, socket):
         assert socket.name not in self.sockets, "Duplicate socket name"

@@ -7,6 +7,7 @@ from view.nodes.terminal_node import TerminalNode
 
 from view.nodes.socket import Socket
 
+
 class NodeCanvas(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()

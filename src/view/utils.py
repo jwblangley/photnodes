@@ -13,6 +13,7 @@ def getTextSize(text, painter=None):
     size = metrics.size(QtCore.Qt.TextSingleLine, text)
     return size
 
+
 def QImage_to_torch(qimg):
     """
     Convert RGB QImage to CxHxW torch array

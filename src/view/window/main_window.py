@@ -6,6 +6,7 @@ from view.window.node_canvas import NodeCanvas
 
 CANVAS_SIZE = (500, 500)
 
+
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -20,16 +21,16 @@ class Window(QtWidgets.QMainWindow):
         self.widget.setLayout(self.layout)
 
         self.node_canvas = NodeCanvas()
-        self.layout.addWidget(self.node_canvas,1,0,1,2)
+        self.layout.addWidget(self.node_canvas, 1, 0, 1, 2)
 
         self.left_image_canvas = ImageCanvas(CANVAS_SIZE)
-        self.layout.addWidget(self.left_image_canvas,0,0)
+        self.layout.addWidget(self.left_image_canvas, 0, 0)
 
         self.right_image_canvas = ImageCanvas(CANVAS_SIZE)
-        self.layout.addWidget(self.right_image_canvas,0,1)
+        self.layout.addWidget(self.right_image_canvas, 0, 1)
 
         self.inspector = Inspector()
-        self.layout.addWidget(self.inspector, 0,2,2,1)
+        self.layout.addWidget(self.inspector, 0, 2, 2, 1)
 
         self.showMaximized()
 

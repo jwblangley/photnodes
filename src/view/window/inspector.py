@@ -1,5 +1,6 @@
 from PySide6 import QtCore, QtWidgets
 
+
 class Inspector(QtWidgets.QScrollArea):
     def __init__(self):
         super().__init__()

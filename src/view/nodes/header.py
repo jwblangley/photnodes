@@ -4,16 +4,16 @@ from PySide6 import QtCore
 
 from view.utils import getTextSize
 
-class Header(QtWidgets.QGraphicsItem):
 
+class Header(QtWidgets.QGraphicsItem):
     def __init__(self, node, text, **kwargs):
         super().__init__(**kwargs)
 
         self.node = node
         self.text = text
         self.h = 20
-        self.fillColor = QtGui.QColor(90,90,90)
-        self.textColor = QtGui.QColor(240,240,240)
+        self.fillColor = QtGui.QColor(90, 90, 90)
+        self.textColor = QtGui.QColor(240, 240, 240)
 
     def boundingRect(self):
         nodeRect = self.node.boundingRect()
@@ -29,14 +29,16 @@ class Header(QtWidgets.QGraphicsItem):
 
         # Paint text
         if self.node.isSelected():
-            painter.setPen(QtGui.QPen(QtGui.QColor(0,0, 255)))
+            painter.setPen(QtGui.QPen(QtGui.QColor(0, 0, 255)))
         else:
             painter.setPen(QtGui.QPen(self.textColor))
 
         textSize = getTextSize(self.text, painter=painter)
-        painter.drawText(self.x() + self.node.margin,
-                         self.y() + (self.h + textSize.height() / 2) / 2,
-                         self.text)
+        painter.drawText(
+            self.x() + self.node.margin,
+            self.y() + (self.h + textSize.height() / 2) / 2,
+            self.text,
+        )
 
     def destroy(self):
         self.node.scene().removeItem(self)

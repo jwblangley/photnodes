@@ -38,7 +38,7 @@ class ImageCanvas(QtWidgets.QScrollArea):
 
         self.action_zoom_out = QtGui.QAction("Zoom out", self)
         self.action_zoom_out.setShortcut(QtGui.QKeySequence.ZoomOut)
-        self.action_zoom_out.triggered.connect(lambda: self.zoom_label(factor=1/1.1))
+        self.action_zoom_out.triggered.connect(lambda: self.zoom_label(factor=1 / 1.1))
 
         self.zoom_label()
 

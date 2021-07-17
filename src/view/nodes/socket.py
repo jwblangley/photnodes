@@ -7,9 +7,11 @@ from view.utils import getTextSize
 
 MARGIN = 5
 
-class Socket(QtWidgets.QGraphicsItem):
 
-    def __init__(self, name, displayName, isInput, maxConnections=float("inf"), **kwargs):
+class Socket(QtWidgets.QGraphicsItem):
+    def __init__(
+        self, name, displayName, isInput, maxConnections=float("inf"), **kwargs
+    ):
         super().__init__(**kwargs)
 
         self.name = name
@@ -116,8 +118,7 @@ class Socket(QtWidgets.QGraphicsItem):
                 self.connectTo(target, connection=self.tempNewCon)
             else:
                 self.tempNewCon.destroy()
-            self.tempNewCon=None
-
+            self.tempNewCon = None
 
     def connectTo(self, other, connection=None):
         if other is self:

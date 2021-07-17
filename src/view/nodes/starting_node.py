@@ -4,7 +4,6 @@ from view.nodes.socket import Socket
 
 
 class StartingNode(BaseNode):
-
     def __init__(self, title, **kwargs):
         super().__init__(title, **kwargs)
 

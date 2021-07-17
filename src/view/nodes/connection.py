@@ -88,14 +88,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
 
     def isRepeat(self):
         assert self.sourceSocket is not None, "No source socket"
-        return (
-            len(
-                list(
-                    filter(lambda o: self._repeat_eq(o), self.sourceSocket.connections)
-                )
-            )
-            > 0
-        )
+        return len(list(filter(self._repeat_eq, self.sourceSocket.connections))) > 0
 
     def canCreate(self):
         return (

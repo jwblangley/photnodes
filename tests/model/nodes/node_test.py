@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import Mock
 from concurrent.futures import ThreadPoolExecutor
 
 from model.nodes.node import BaseNode
@@ -91,7 +92,7 @@ def test_basic_multi_input_operation():
         assert n3.process(executor).result() == 2
 
 
-# @pytest.mark.timeout(1)
+@pytest.mark.timeout(1)
 def test_operation_two_input_paths():
     n1 = TestStartingNodeOne()
     n2 = TestStartingNodeOne()
@@ -109,3 +110,19 @@ def test_operation_two_input_paths():
 
     with ThreadPoolExecutor(max_workers=1) as executor:
         assert n5.process(executor).result() == 6
+
+
+@pytest.mark.timeout(1)
+def test_basic_operation_is_cached():
+    n1 = TestStartingNodeOne()
+    n2 = TestOperationNodeAddTwo()
+
+    n2.set_input_connection("input", n1)
+    n2.calculate = Mock(return_value=3)
+
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        assert n2.process(executor).result() == 3
+        n2.calculate.assert_called_once()
+
+        assert n2.process(executor).result() == 3
+        n2.calculate.assert_called_once()

@@ -26,6 +26,17 @@ class TestOperationNodeAddTwo(BaseNode):
         return dependencies["input"] + 2
 
 
+class TestOperationNodeAdd(BaseNode):
+    def __init__(self):
+        super().__init__()
+
+    def check_required_connections(self):
+        return "input1" in self.input_connections and "input2" in self.input_connections
+
+    def calculate(self, dependencies):
+        return dependencies["input1"] + dependencies["input2"]
+
+
 @pytest.mark.timeout(1)
 def test_base_node_raises_not_implemented():
     node = BaseNode()
@@ -64,3 +75,37 @@ def test_removed_required_input_returns_none():
 
     with ThreadPoolExecutor(max_workers=1) as executor:
         assert n2.process(executor).result() is None
+
+
+@pytest.mark.timeout(1)
+def test_basic_multi_input_operation():
+    n1 = TestStartingNodeOne()
+    n2 = TestStartingNodeOne()
+
+    n3 = TestOperationNodeAdd()
+
+    n3.set_input_connection("input1", n1)
+    n3.set_input_connection("input2", n2)
+
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        assert n3.process(executor).result() == 2
+
+
+# @pytest.mark.timeout(1)
+def test_operation_two_input_paths():
+    n1 = TestStartingNodeOne()
+    n2 = TestStartingNodeOne()
+
+    n3 = TestOperationNodeAddTwo()
+    n4 = TestOperationNodeAddTwo()
+
+    n5 = TestOperationNodeAdd()
+
+    n3.set_input_connection("input", n1)
+    n4.set_input_connection("input", n2)
+
+    n5.set_input_connection("input1", n3)
+    n5.set_input_connection("input2", n4)
+
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        assert n5.process(executor).result() == 6

@@ -22,7 +22,8 @@ class BaseNode:
     def _calculate(self, dependencies):
         # Wait for dependency calculation completion
         dependencies = {k: v.result() for k, v in dependencies.items()}
-        return self.calculate(dependencies)
+        self._result = self.calculate(dependencies)
+        return self._result
 
     def process(self, executor):
         if not self.check_required_connections():

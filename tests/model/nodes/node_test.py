@@ -9,7 +9,7 @@ class TestStartingNodeOne(BaseNode):
     def __init__(self):
         super().__init__()
 
-    def check_required_connections(self):
+    def check_requirements(self):
         return True
 
     def calculate(self, dependencies):
@@ -20,7 +20,7 @@ class TestOperationNodeAddTwo(BaseNode):
     def __init__(self):
         super().__init__()
 
-    def check_required_connections(self):
+    def check_requirements(self):
         return "input" in self.input_connections
 
     def calculate(self, dependencies):
@@ -31,7 +31,7 @@ class TestOperationNodeAdd(BaseNode):
     def __init__(self):
         super().__init__()
 
-    def check_required_connections(self):
+    def check_requirements(self):
         return "input1" in self.input_connections and "input2" in self.input_connections
 
     def calculate(self, dependencies):

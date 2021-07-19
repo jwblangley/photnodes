@@ -12,9 +12,9 @@ class BaseNode:
         if name in self.input_connections:
             del self.input_connections[name]
 
-    def check_required_connections(self):
+    def check_requirements(self):
         raise NotImplementedError(
-            "check_required_connections should be implemented in subclasses"
+            "check_requirements should be implemented in subclasses"
         )
 
     def set_attribute(self, name, value):
@@ -45,7 +45,7 @@ class BaseNode:
         return self._result
 
     def process(self, executor, check_dirty=True):
-        if not self.check_required_connections():
+        if not self.check_requirements():
             return executor.submit(lambda: None)
 
         if check_dirty:

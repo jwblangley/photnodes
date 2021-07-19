@@ -1,5 +1,6 @@
 import pytest
 from unittest.mock import Mock
+
 from concurrent.futures import ThreadPoolExecutor
 
 from model.nodes.node import BaseNode
@@ -172,7 +173,7 @@ def test_operation_two_input_paths_is_cached():
         n5.calculate.assert_called_once()
 
 
-# @pytest.mark.timeout(1)
+@pytest.mark.timeout(1)
 def test_operation_two_input_paths_is_dirty_when_attribute_changed_early():
     n1 = TestStartingNodeOne()
     n2 = TestStartingNodeOne()

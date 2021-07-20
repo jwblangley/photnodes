@@ -20,6 +20,12 @@ class Controller:
 
         self.window.nodeCanvas.addNode(vnode)
 
+    def remove_node(self, vnode):
+        mnode = self.view_model_node_map(vnode)
+
+        vnode.destroy()
+        mnode.destroy()
+
     def pass_attribute(self, vnode, name, value):
         attr_dict = {name: value}
         attr_dict = attribute_dict_qt_to_torch_adapter(attr_dict)

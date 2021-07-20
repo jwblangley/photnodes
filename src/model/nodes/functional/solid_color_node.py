@@ -6,17 +6,17 @@ from model.nodes.node import BaseNode
 class SolidColorNode(BaseNode):
     def __init__(self):
         super().__init__()
+        self.color = None
+        self.width = None
+        self.height = None
 
     def check_requirements(self):
         return (
-            hasattr(self, "color")
-            and isinstance(self.color, torch.Tensor)
+            isinstance(self.color, torch.Tensor)
             and len(self.color.size()) == 1
             and self.color.size(0) == 3
-            and hasattr(self, "width")
             and isinstance(self.width, int)
             and self.width > 0
-            and hasattr(self, "height")
             and isinstance(self.height, int)
             and self.height > 0
         )

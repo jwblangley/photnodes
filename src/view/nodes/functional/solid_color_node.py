@@ -27,14 +27,14 @@ class SolidColorNode(StartingNode):
         self.colorPicker = ColorInput(
             "Colour:",
             self.color,
-            lambda value: setattr(self, "color", value),
+            lambda value: self.setAttribute("color", value),
         )
         self.iwLayout.addWidget(self.colorPicker)
 
         self.widthPicker = TextInput(
             "Width:",
             self.width,
-            lambda value: setattr(self, "width", int(value)),
+            lambda value: self.setAttribute("width", int(value)),
             validator=QtGui.QIntValidator(),
         )
         self.iwLayout.addWidget(self.widthPicker)
@@ -42,7 +42,7 @@ class SolidColorNode(StartingNode):
         self.heightPicker = TextInput(
             "Height:",
             self.height,
-            lambda value: setattr(self, "height", int(value)),
+            lambda value: self.setAttribute("height", int(value)),
             validator=QtGui.QIntValidator(),
         )
         self.iwLayout.addWidget(self.heightPicker)

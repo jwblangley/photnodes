@@ -129,3 +129,7 @@ class BaseNode(QtWidgets.QGraphicsItem):
                 socket.setX(self.boundingRect().left() - socket.w)
             else:
                 socket.setX(self.boundingRect().right())
+
+    def setAttribute(self, name, value):
+        setattr(self, name, value)
+        QtWidgets.QApplication.instance().controller.pass_attribute(self, name, value)

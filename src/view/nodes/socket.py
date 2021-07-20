@@ -116,6 +116,9 @@ class Socket(QtWidgets.QGraphicsItem):
 
             if isinstance(target, Socket) and target is not self:
                 self.connectTo(target, connection=self.tempNewCon)
+                QtWidgets.QApplication.instance().controller.create_connection(
+                    self.tempNewCon
+                )
             else:
                 self.tempNewCon.destroy()
             self.tempNewCon = None

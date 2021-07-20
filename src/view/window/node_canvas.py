@@ -1,12 +1,6 @@
 from PySide6 import QtWidgets
 from view.nodes.functional.solid_color_node import SolidColorNode
 
-from view.nodes.starting_node import StartingNode
-from view.nodes.flow_node import FlowNode
-from view.nodes.terminal_node import TerminalNode
-
-from view.nodes.socket import Socket
-
 
 class NodeCanvas(QtWidgets.QWidget):
     def __init__(self):

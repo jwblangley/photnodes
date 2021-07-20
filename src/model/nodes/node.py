@@ -18,6 +18,9 @@ class BaseNode:
         )
 
     def set_attribute(self, name, value):
+        if not hasattr(self, name):
+            raise AttributeError(f"Node does not have attribute: {name}")
+
         if not (hasattr(self, name) and getattr(self, name) == value):
             setattr(self, name, value)
             self._dirty = True

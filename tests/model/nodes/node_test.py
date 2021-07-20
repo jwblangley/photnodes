@@ -9,6 +9,7 @@ from model.nodes.node import BaseNode
 class TestStartingNodeOne(BaseNode):
     def __init__(self):
         super().__init__()
+        self.test = None
 
     def check_requirements(self):
         return True
@@ -20,6 +21,7 @@ class TestStartingNodeOne(BaseNode):
 class TestOperationNodeAddTwo(BaseNode):
     def __init__(self):
         super().__init__()
+        self.test = None
 
     def check_requirements(self):
         return "input" in self.input_connections
@@ -31,6 +33,7 @@ class TestOperationNodeAddTwo(BaseNode):
 class TestOperationNodeAdd(BaseNode):
     def __init__(self):
         super().__init__()
+        self.test = None
 
     def check_requirements(self):
         return "input1" in self.input_connections and "input2" in self.input_connections

@@ -13,6 +13,8 @@ class SolidColorNode(StartingNode):
         super().__init__(SolidColorNode.TITLE, **kwargs)
 
         # Define vars
+        self.allVars = ["color", "width", "height"]
+
         self.color = QtGui.QColor()
         self.width = 0
         self.height = 0

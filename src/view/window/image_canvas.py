@@ -26,41 +26,38 @@ class ImageCanvas(QtWidgets.QScrollArea):
 
         self.pixmap = QtGui.QPixmap(self.width, self.height)
         self.pixmap.fill(QtGui.QColor("white"))
+        self.qImgCache = self.pixmap.toImage()
         self.label.setPixmap(self.pixmap)
 
         self.painter = QtGui.QPainter(self.pixmap)
 
         self.actionZoomIn = QtGui.QAction("Zoom in", self)
         self.actionZoomIn.setShortcut(QtGui.QKeySequence.ZoomIn)
-        self.actionZoomIn.triggered.connect(lambda: self.zoom_label(factor=1.1))
+        self.actionZoomIn.triggered.connect(lambda: self.zoomLabel(factor=1.1))
 
         self.actionZoomOut = QtGui.QAction("Zoom out", self)
         self.actionZoomOut.setShortcut(QtGui.QKeySequence.ZoomOut)
-        self.actionZoomOut.triggered.connect(lambda: self.zoom_label(factor=1 / 1.1))
+        self.actionZoomOut.triggered.connect(lambda: self.zoomLabel(factor=1 / 1.1))
 
-        self.zoom_label()
+        self.zoomLabel()
 
     def destroy(self):
         self.painter.end()
         super().destroy()
         del self
 
-    def zoom_label(self, factor=None):
+    def zoomLabel(self, factor=None):
         if factor is not None:
             self.scale *= factor
         self.label.resize(self.width * self.scale, self.height * self.scale)
 
-    def update_label(self):
+    def updateLabel(self):
         self.label.setPixmap(self.pixmap)
 
-    def paint_image(self, qImg=None, qImgBuffer=None, cached_only=False):
+    def paintImage(self, qImg=None, qImgBuffer=None, cachedOnly=False):
         # Buffer must be kept in memory prior to usage
 
-        if (
-            cached_only
-            and self.qImgCache is not None
-            and self.qImgBufferCache is not None
-        ):
+        if cachedOnly:
             if qImg is not None or qImgBuffer is not None:
                 warnings.warn("Using cached image, when new image is provided")
 
@@ -76,4 +73,4 @@ class ImageCanvas(QtWidgets.QScrollArea):
 
             self.painter.drawImage(0, 0, qImg)
 
-        self.update_label()
+        self.updateLabel()

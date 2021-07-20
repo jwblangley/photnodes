@@ -1,3 +1,4 @@
+from concurrent.futures.thread import ThreadPoolExecutor
 import sys
 
 from PySide6 import QtWidgets
@@ -13,6 +14,8 @@ if __name__ == "__main__":
 
     app.window = window
     app.controller = controller
+
+    controller.initialise()
 
     app.window.show()
     sys.exit(app.exec_())

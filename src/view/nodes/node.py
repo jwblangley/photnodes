@@ -28,6 +28,7 @@ class BaseNode(QtWidgets.QGraphicsItem):
         self.sockets = {}
 
         self.inspectorWidget = QtWidgets.QWidget()
+        self.allVars = None
 
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
@@ -133,3 +134,12 @@ class BaseNode(QtWidgets.QGraphicsItem):
     def setAttribute(self, name, value):
         setattr(self, name, value)
         QtWidgets.QApplication.instance().controller.pass_attribute(self, name, value)
+
+    def passAllAttributes(self):
+        if self.allVars is None:
+            raise NotImplementedError("allVars should be set by subclasses")
+        for name in self.allVars:
+            value = getattr(self, name)
+            QtWidgets.QApplication.instance().controller.pass_attribute(
+                self, name, value
+            )

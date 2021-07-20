@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import Mock
 
-from concurrent.futures import ThreadPoolExecutor
 
 from model.nodes.node import BaseNode
 
@@ -42,35 +41,28 @@ class TestOperationNodeAdd(BaseNode):
         return dependencies["input1"] + dependencies["input2"]
 
 
-@pytest.mark.timeout(1)
 def test_base_node_raises_not_implemented():
     node = BaseNode()
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        with pytest.raises(NotImplementedError):
-            node.process(executor)
+    with pytest.raises(NotImplementedError):
+        node.process()
 
 
-@pytest.mark.timeout(1)
 def test_basic_operation():
     n1 = TestStartingNodeOne()
     n2 = TestOperationNodeAddTwo()
 
     n2.set_input_connection("input", n1)
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        assert n2.process(executor).result() == 3
+    assert n2.process() == 3
 
 
-@pytest.mark.timeout(1)
 def test_no_required_input_returns_none():
     n2 = TestOperationNodeAddTwo()
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        assert n2.process(executor).result() is None
+    assert n2.process() is None
 
 
-@pytest.mark.timeout(1)
 def test_removed_required_input_returns_none():
     n1 = TestStartingNodeOne()
     n2 = TestOperationNodeAddTwo()
@@ -78,11 +70,9 @@ def test_removed_required_input_returns_none():
     n2.set_input_connection("input", n1)
     n2.remove_input_connection("input")
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        assert n2.process(executor).result() is None
+    assert n2.process() is None
 
 
-@pytest.mark.timeout(1)
 def test_basic_multi_input_operation():
     n1 = TestStartingNodeOne()
     n2 = TestStartingNodeOne()
@@ -92,11 +82,9 @@ def test_basic_multi_input_operation():
     n3.set_input_connection("input1", n1)
     n3.set_input_connection("input2", n2)
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        assert n3.process(executor).result() == 2
+    assert n3.process() == 2
 
 
-@pytest.mark.timeout(1)
 def test_operation_two_input_paths():
     n1 = TestStartingNodeOne()
     n2 = TestStartingNodeOne()
@@ -112,11 +100,9 @@ def test_operation_two_input_paths():
     n5.set_input_connection("input1", n3)
     n5.set_input_connection("input2", n4)
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        assert n5.process(executor).result() == 6
+    assert n5.process() == 6
 
 
-@pytest.mark.timeout(1)
 def test_basic_operation_is_cached():
     n1 = TestStartingNodeOne()
     n2 = TestOperationNodeAddTwo()
@@ -124,15 +110,13 @@ def test_basic_operation_is_cached():
     n2.set_input_connection("input", n1)
     n2.calculate = Mock(return_value=3)
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        assert n2.process(executor).result() == 3
-        n2.calculate.assert_called_once()
+    assert n2.process() == 3
+    n2.calculate.assert_called_once()
 
-        assert n2.process(executor).result() == 3
-        n2.calculate.assert_called_once()
+    assert n2.process() == 3
+    n2.calculate.assert_called_once()
 
 
-@pytest.mark.timeout(1)
 def test_basic_operation_is_dirty_when_attribute_changed():
     n1 = TestStartingNodeOne()
     n2 = TestOperationNodeAddTwo()
@@ -140,17 +124,15 @@ def test_basic_operation_is_dirty_when_attribute_changed():
     n2.set_input_connection("input", n1)
     n2.calculate = Mock(return_value=3)
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        assert n2.process(executor).result() == 3
-        n2.calculate.assert_called_once()
+    assert n2.process() == 3
+    n2.calculate.assert_called_once()
 
-        n2.set_attribute("test", 1)
+    n2.set_attribute("test", 1)
 
-        assert n2.process(executor).result() == 3
-        assert n2.calculate.call_count == 2
+    assert n2.process() == 3
+    assert n2.calculate.call_count == 2
 
 
-@pytest.mark.timeout(1)
 def test_operation_two_input_paths_is_cached():
     n1 = TestStartingNodeOne()
     n2 = TestStartingNodeOne()
@@ -168,15 +150,13 @@ def test_operation_two_input_paths_is_cached():
 
     n5.calculate = Mock(return_value=6)
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        assert n5.process(executor).result() == 6
-        n5.calculate.assert_called_once()
+    assert n5.process() == 6
+    n5.calculate.assert_called_once()
 
-        assert n5.process(executor).result() == 6
-        n5.calculate.assert_called_once()
+    assert n5.process() == 6
+    n5.calculate.assert_called_once()
 
 
-@pytest.mark.timeout(1)
 def test_operation_two_input_paths_is_dirty_when_attribute_changed_early():
     n1 = TestStartingNodeOne()
     n2 = TestStartingNodeOne()
@@ -194,14 +174,13 @@ def test_operation_two_input_paths_is_dirty_when_attribute_changed_early():
 
     n5.calculate = Mock(return_value=6)
 
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        assert n5.process(executor).result() == 6
-        n5.calculate.assert_called_once()
+    assert n5.process() == 6
+    n5.calculate.assert_called_once()
 
-        n1.set_attribute("test", 1)
+    n1.set_attribute("test", 1)
 
-        assert n5.process(executor).result() == 6
-        assert n5.calculate.call_count == 2
+    assert n5.process() == 6
+    assert n5.calculate.call_count == 2
 
 
 def test_destroy_removes_connections():

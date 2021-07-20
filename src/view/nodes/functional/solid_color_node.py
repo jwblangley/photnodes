@@ -12,7 +12,7 @@ class SolidColorNode(StartingNode):
         super().__init__("Solid color", **kwargs)
 
         # Define vars
-        self.chosenColor = QtGui.QColor()
+        self.color = QtGui.QColor()
         self.width = 0
         self.height = 0
 
@@ -26,8 +26,8 @@ class SolidColorNode(StartingNode):
 
         self.colorPicker = ColorInput(
             "Colour:",
-            self.chosenColor,
-            lambda value: setattr(self, "chosenColor", value),
+            self.color,
+            lambda value: setattr(self, "color", value),
         )
         self.iwLayout.addWidget(self.colorPicker)
 

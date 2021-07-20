@@ -1,5 +1,5 @@
 from PySide6 import QtWidgets
-from view.nodes.functional.solid_color_node import SolidColorNode
+from PySide6 import QtCore
 
 
 class NodeCanvas(QtWidgets.QWidget):
@@ -17,3 +17,18 @@ class NodeCanvas(QtWidgets.QWidget):
     def addNode(self, node):
         if node not in self.scene.items():
             self.scene.addItem(node)
+
+    def selectedItems(self):
+        return self.scene.selectedItems()
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_1:
+            if len(self.selectedItems()) == 1:
+                QtWidgets.QApplication.instance().controller.set_left_selected_node(
+                    self.selectedItems()[0]
+                )
+        if event.key() == QtCore.Qt.Key_2:
+            if len(self.selectedItems()) == 1:
+                QtWidgets.QApplication.instance().controller.set_right_selected_node(
+                    self.selectedItems()[0]
+                )

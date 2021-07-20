@@ -1,5 +1,6 @@
 from controller.node_map import NODE_CLASS_MAP
 from controller.attribute_passing_adapter import attribute_dict_qt_to_torch_adapter
+from view.nodes.functional.render_node import RenderNode
 
 
 class Controller:
@@ -8,10 +9,10 @@ class Controller:
 
         self.view_model_node_map = {}
 
+        self.render_node, _ = self.new_node(RenderNode)
+
     def new_node(self, vnode_class):
-        print(vnode_class)
         mnode_class = NODE_CLASS_MAP[vnode_class]
-        print(mnode_class)
 
         vnode = vnode_class()
         mnode = mnode_class()
@@ -19,6 +20,8 @@ class Controller:
         self.view_model_node_map[vnode] = mnode
 
         self.window.nodeCanvas.addNode(vnode)
+
+        return vnode, mnode
 
     def remove_node(self, vnode):
         mnode = self.view_model_node_map(vnode)

@@ -5,6 +5,8 @@ from view.inputs.text_input import TextInput
 
 from view.nodes.terminal_node import TerminalNode
 
+DEFAULT_GAMMA = 2.2
+
 
 class RenderNode(TerminalNode):
     TITLE = "Output"
@@ -15,7 +17,7 @@ class RenderNode(TerminalNode):
         # Define vars
         self.allVars = ["gamma"]
 
-        self.gamma = 1.0
+        self.gamma = DEFAULT_GAMMA
 
         # Define node
 
@@ -29,6 +31,6 @@ class RenderNode(TerminalNode):
             "Gamma:",
             self.gamma,
             lambda value: self.setAttribute("gamma", int(value)),
-            validator=QtGui.QIntValidator(),
+            validator=QtGui.QDoubleValidator(),
         )
         self.iwLayout.addWidget(self.gammaPicker)

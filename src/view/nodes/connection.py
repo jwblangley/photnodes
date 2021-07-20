@@ -71,6 +71,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.MouseButton.LeftButton and self.canDelete:
+            QtWidgets.QApplication.instance().controller.pass_remove_connection(self)
             self.destroy()
 
     def _repeat_eq(self, other):

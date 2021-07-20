@@ -45,7 +45,7 @@ class Controller:
 
         return vsocket_source, vnode_source, vnode_target, mnode_source, mnode_target
 
-    def create_connection(self, vconnection):
+    def pass_new_connection(self, vconnection):
         (
             vsocket_source,
             vnode_source,

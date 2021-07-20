@@ -202,3 +202,31 @@ def test_operation_two_input_paths_is_dirty_when_attribute_changed_early():
 
         assert n5.process(executor).result() == 6
         assert n5.calculate.call_count == 2
+
+
+def test_destroy_removes_connections():
+    n1 = TestStartingNodeOne()
+    n2 = TestOperationNodeAddTwo()
+    n3 = TestOperationNodeAddTwo()
+
+    n2.set_input_connection("input", n1)
+    n3.set_input_connection("input", n2)
+
+    n2.destroy()
+
+    assert "input" not in n3.input_connections
+
+
+def test_destroy_does_not_side_effect():
+    n1 = TestStartingNodeOne()
+    n2 = TestOperationNodeAddTwo()
+    n3 = TestOperationNodeAddTwo()
+    n4 = TestOperationNodeAddTwo()
+
+    n2.set_input_connection("input", n1)
+    n3.set_input_connection("input", n2)
+    n4.set_input_connection("input", n3)
+
+    n3.destroy()
+
+    assert "input" in n2.input_connections

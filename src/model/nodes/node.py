@@ -2,14 +2,27 @@ class BaseNode:
     def __init__(self):
         self.input_connections = {}
 
+        self.destroy_listeners = []
+
         self._dirty = True
         self._result = None
 
+    def destroy(self):
+        for listener in self.destroy_listeners:
+            listener.input_connections = {
+                k: v for k, v in listener.input_connections.items() if v != self
+            }
+
     def set_input_connection(self, name, input_connection):
         self.input_connections[name] = input_connection
+        input_connection.destroy_listeners.append(self)
 
     def remove_input_connection(self, name):
         if name in self.input_connections:
+            input_connection = self.input_connections[name]
+            input_connection.destroy_listeners = list(
+                filter(lambda c: c != self, input_connection.destroy_listeners)
+            )
             del self.input_connections[name]
 
     def check_requirements(self):

@@ -1,6 +1,8 @@
 from PySide6 import QtWidgets
 from PySide6 import QtCore
 
+ZOOM_FACTOR = 1.1
+
 
 class NodeCanvas(QtWidgets.QWidget):
     def __init__(self):
@@ -13,6 +15,15 @@ class NodeCanvas(QtWidgets.QWidget):
         self.scene = QtWidgets.QGraphicsScene()
         self.view = QtWidgets.QGraphicsView(self.scene)
         self.layout.addWidget(self.view, 0, 0)
+
+    def wheelEvent(self, event):
+        if event.modifiers() == QtCore.Qt.ControlModifier:
+            if event.angleDelta().y() > 0:
+                self.view.scale(ZOOM_FACTOR, ZOOM_FACTOR)
+            elif event.angleDelta().y() < 0:
+                self.view.scale(1 / ZOOM_FACTOR, 1 / ZOOM_FACTOR)
+
+        super().wheelEvent(event)
 
     def addNode(self, node):
         if node not in self.scene.items():

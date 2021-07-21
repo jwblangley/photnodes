@@ -2,26 +2,26 @@ class BaseNode:
     def __init__(self):
         self.input_connections = {}
 
-        self.destroy_listeners = []
+        self.output_connections = []
 
         self._dirty = True
         self._result = None
 
     def destroy(self):
-        for listener in self.destroy_listeners:
+        for listener in self.output_connections:
             listener.input_connections = {
                 k: v for k, v in listener.input_connections.items() if v != self
             }
 
     def set_input_connection(self, name, input_connection):
         self.input_connections[name] = input_connection
-        input_connection.destroy_listeners.append(self)
+        input_connection.output_connections.append(self)
 
     def remove_input_connection(self, name):
         if name in self.input_connections:
             input_connection = self.input_connections[name]
-            input_connection.destroy_listeners = list(
-                filter(lambda c: c != self, input_connection.destroy_listeners)
+            input_connection.output_connections = list(
+                filter(lambda c: c != self, input_connection.output_connections)
             )
             del self.input_connections[name]
 
@@ -35,14 +35,13 @@ class BaseNode:
             raise AttributeError(f"Node does not have attribute: {name}")
 
         setattr(self, name, value)
-        self._dirty = True
+        self.flag_dirty()
 
     def flag_dirty(self):
-        for node in self.input_connections.values():
-            if node.flag_dirty():
-                self._dirty = True
+        self._dirty = True
 
-        return self._dirty
+        for node in self.output_connections:
+            node.flag_dirty()
 
     def calculate(self, dependencies):
         raise NotImplementedError("calculate should be implemented in subclasses")
@@ -61,7 +60,7 @@ class BaseNode:
             return None
 
         if check_dirty:
-            self.flag_dirty()
+            self._dirty
 
         # Queue dependent results
         dependencies = {

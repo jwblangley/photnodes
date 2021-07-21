@@ -99,7 +99,6 @@ class Connection(QtWidgets.QGraphicsPathItem):
                 (self.sourceSocket.isInput and not self.targetSocket.isInput)
                 or (self.targetSocket.isInput and not self.sourceSocket.isInput)
             )
-            and self.targetSocket.isInput
             and self.sourceSocket.node != self.targetSocket.node
             and len(self.sourceSocket.connections) < self.sourceSocket.maxConnections
             and len(self.targetSocket.connections) < self.targetSocket.maxConnections

@@ -52,7 +52,7 @@ class BaseNode(QtWidgets.QGraphicsItem):
         return super().itemChange(change, value)
 
     def boundingRect(self):
-        return QtCore.QRect(self.x, self.y, self.w, self.h)
+        return QtCore.QRect(self.x, self.y, self.getWidth(), self.getHeight())
 
     def paint(self, painter, option, widget):
         painter.setBrush(QtGui.QBrush(self.fillColor))
@@ -72,7 +72,6 @@ class BaseNode(QtWidgets.QGraphicsItem):
             socket.destroy()
 
         self.scene().removeItem(self)
-        del self
 
     def mouseMoveEvent(self, event):
         for node in self.scene().selectedItems():

@@ -52,7 +52,6 @@ class Connection(QtWidgets.QGraphicsPathItem):
             self.targetSocket.connections.remove(self)
 
         self.scene().removeItem(self)
-        del self
 
     def hoverEnterEvent(self, event):
         if QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:

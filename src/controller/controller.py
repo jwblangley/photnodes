@@ -20,7 +20,7 @@ class Controller:
 
     def initialise(self):
         self.render_node, _ = self.new_node(RenderNode)
-        self.right_selected_node = self.render_node
+        self.set_right_selected_node(self.render_node)
 
         self.new_node(SolidColorNode)
 
@@ -120,9 +120,21 @@ class Controller:
         return torch_to_QImage(img)
 
     def set_left_selected_node(self, vnode):
+        if self.left_selected_node is not None:
+            self.left_selected_node.header.displayedLeft = False
+            self.left_selected_node.header.update()
+
         self.left_selected_node = vnode
+        self.left_selected_node.header.displayedLeft = True
+        self.left_selected_node.header.update()
         self.update_image_canvases()
 
     def set_right_selected_node(self, vnode):
+        if self.right_selected_node is not None:
+            self.right_selected_node.header.displayedRight = False
+            self.right_selected_node.header.update()
+
         self.right_selected_node = vnode
+        self.right_selected_node.header.displayedRight = True
+        self.right_selected_node.header.update()
         self.update_image_canvases()

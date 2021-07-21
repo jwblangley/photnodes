@@ -68,7 +68,6 @@ class Socket(QtWidgets.QGraphicsItem):
         self.scene().removeItem(self)
         for con in self.connections[::]:
             con.destroy()
-        del self
 
     def hoverEnterEvent(self, event):
         self.highlighting = True

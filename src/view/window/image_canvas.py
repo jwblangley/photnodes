@@ -21,15 +21,8 @@ class ImageCanvas(QtWidgets.QScrollArea):
         self.label.setSizePolicy(
             QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored
         )
-        self.label.setScaledContents(True)
+        self.label.setScaledContents(False)
         self.setWidget(self.label)
-
-        self.pixmap = QtGui.QPixmap(self.width, self.height)
-        self.pixmap.fill(QtGui.QColor("white"))
-        self.qImgCache = self.pixmap.toImage()
-        self.label.setPixmap(self.pixmap)
-
-        self.painter = QtGui.QPainter(self.pixmap)
 
         self.actionZoomIn = QtGui.QAction("Zoom in", self)
         self.actionZoomIn.setShortcut(QtGui.QKeySequence.ZoomIn)
@@ -41,18 +34,10 @@ class ImageCanvas(QtWidgets.QScrollArea):
 
         self.zoomLabel()
 
-    def destroy(self):
-        self.painter.end()
-        super().destroy()
-        del self
-
     def zoomLabel(self, factor=None):
         if factor is not None:
             self.scale *= factor
         self.label.resize(self.width * self.scale, self.height * self.scale)
-
-    def updateLabel(self):
-        self.label.setPixmap(self.pixmap)
 
     def paintImage(self, qImg=None, qImgBuffer=None, cachedOnly=False):
         # Buffer must be kept in memory prior to usage
@@ -61,16 +46,29 @@ class ImageCanvas(QtWidgets.QScrollArea):
             if qImg is not None or qImgBuffer is not None:
                 warnings.warn("Using cached image, when new image is provided")
 
-            self.painter.drawImage(0, 0, self.qImgCache)
+            qImg = self.qImgCache
         else:
             if qImg is None:
-                raise RuntimeError("Image to paint is not given")
-            if qImgBuffer is None:
+                if qImgBuffer is not None:
+                    warnings.warn("Image buffer provided with no image. Ignored")
+                self.label.setVisible(False)
+                return
+            elif qImgBuffer is None:
                 raise RuntimeError("Image buffer to paint is not given")
 
             self.qImgCache = qImg
             self.qImgBufferCache = qImgBuffer
 
-            self.painter.drawImage(0, 0, qImg)
+        self.width = qImg.width()
+        self.height = qImg.height()
 
-        self.updateLabel()
+        pixmap = QtGui.QPixmap(self.width, self.height)
+        pixmap.fill(QtGui.QColor("black"))
+
+        painter = QtGui.QPainter(pixmap)
+        painter.drawImage(0, 0, qImg)
+        painter.end()
+
+        self.label.setPixmap(pixmap)
+        self.zoomLabel()
+        self.label.setVisible(True)

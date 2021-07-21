@@ -104,12 +104,8 @@ class Controller:
         left_img, left_img_buffer = self.process_node(self.left_selected_node)
         right_img, right_img_buffer = self.process_node(self.right_selected_node)
 
-        self.window.leftImageCanvas.paintImage(
-            left_img, left_img_buffer, cachedOnly=left_img is None
-        )
-        self.window.rightImageCanvas.paintImage(
-            right_img, right_img_buffer, cachedOnly=right_img is None
-        )
+        self.window.leftImageCanvas.paintImage(left_img, left_img_buffer)
+        self.window.rightImageCanvas.paintImage(right_img, right_img_buffer)
 
     def process_node(self, vnode):
         if vnode is None:

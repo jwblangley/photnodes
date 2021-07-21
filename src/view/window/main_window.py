@@ -4,7 +4,7 @@ from view.window.inspector import Inspector
 
 from view.window.node_canvas import NodeCanvas
 
-CANVAS_SIZE = (500, 500)
+CANVAS_SIZE = (1, 1)
 
 
 class Window(QtWidgets.QMainWindow):
@@ -33,7 +33,3 @@ class Window(QtWidgets.QMainWindow):
         self.layout.addWidget(self.inspector, 0, 2, 2, 1)
 
         self.showMaximized()
-
-    def closeEvent(self, event):
-        self.leftImageCanvas.destroy()
-        self.rightImageCanvas.destroy()

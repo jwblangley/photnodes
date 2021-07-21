@@ -30,7 +30,7 @@ class RenderNode(TerminalNode):
         self.gammaPicker = TextInput(
             "Gamma:",
             self.gamma,
-            lambda value: self.setAttribute("gamma", int(value)),
+            lambda value: self.setAttribute("gamma", float(value)),
             validator=QtGui.QDoubleValidator(),
         )
         self.iwLayout.addWidget(self.gammaPicker)

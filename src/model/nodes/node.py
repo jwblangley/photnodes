@@ -16,6 +16,7 @@ class BaseNode:
     def set_input_connection(self, name, input_connection):
         self.input_connections[name] = input_connection
         input_connection.output_connections.append(self)
+        self.flag_dirty()
 
     def remove_input_connection(self, name):
         if name in self.input_connections:
@@ -24,6 +25,7 @@ class BaseNode:
                 filter(lambda c: c != self, input_connection.output_connections)
             )
             del self.input_connections[name]
+            self.flag_dirty()
 
     def check_requirements(self):
         raise NotImplementedError(

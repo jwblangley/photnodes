@@ -2,6 +2,8 @@ import warnings
 
 from PySide6 import QtCore, QtWidgets, QtGui
 
+ZOOM_FACTOR = 1.1
+
 
 class ImageCanvas(QtWidgets.QScrollArea):
     def __init__(self, size):
@@ -21,18 +23,19 @@ class ImageCanvas(QtWidgets.QScrollArea):
         self.label.setSizePolicy(
             QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored
         )
-        self.label.setScaledContents(False)
+        self.label.setScaledContents(True)
         self.setWidget(self.label)
 
-        self.actionZoomIn = QtGui.QAction("Zoom in", self)
-        self.actionZoomIn.setShortcut(QtGui.QKeySequence.ZoomIn)
-        self.actionZoomIn.triggered.connect(lambda: self.zoomLabel(factor=1.1))
-
-        self.actionZoomOut = QtGui.QAction("Zoom out", self)
-        self.actionZoomOut.setShortcut(QtGui.QKeySequence.ZoomOut)
-        self.actionZoomOut.triggered.connect(lambda: self.zoomLabel(factor=1 / 1.1))
-
         self.zoomLabel()
+
+    def wheelEvent(self, event):
+        if event.modifiers() == QtCore.Qt.ControlModifier:
+            if event.angleDelta().y() > 0:
+                self.zoomLabel(factor=ZOOM_FACTOR)
+            elif event.angleDelta().y() < 0:
+                self.zoomLabel(factor=1 / ZOOM_FACTOR)
+
+        super().wheelEvent(event)
 
     def zoomLabel(self, factor=None):
         if factor is not None:

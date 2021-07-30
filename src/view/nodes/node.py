@@ -42,12 +42,12 @@ class BaseNode(QtWidgets.QGraphicsItem):
     def itemChange(self, change, value):
         if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
             inspector = QtWidgets.QApplication.instance().window.inspector
+
             if value:
                 inspector.layout.addWidget(self.inspectorWidget)
                 inspector.titleLabel.setText(f"Inspector: {self.title}")
             else:
-                self.inspectorWidget.setParent(None)
-                inspector.titleLabel.setText("Inspector")
+                self.onDeselect()
 
         return super().itemChange(change, value)
 
@@ -68,10 +68,13 @@ class BaseNode(QtWidgets.QGraphicsItem):
         if self.header is not None:
             self.header.destroy()
 
-        for socket in self.sockets[::]:
+        for socket in self.sockets.values():
             socket.destroy()
 
         self.scene().removeItem(self)
+
+        if self.isSelected():
+            self.onDeselect()
 
     def mouseMoveEvent(self, event):
         for node in self.scene().selectedItems():
@@ -93,6 +96,11 @@ class BaseNode(QtWidgets.QGraphicsItem):
             + self.header.h
             + self.margin
         )
+
+    def onDeselect(self):
+        self.inspectorWidget.setParent(None)
+        inspector = QtWidgets.QApplication.instance().window.inspector
+        inspector.titleLabel.setText("Inspector")
 
     def getWidth(self):
         headerWidth = self.margin + getTextSize(self.header.text).width()

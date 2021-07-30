@@ -22,8 +22,6 @@ class Controller:
         self.render_node, _ = self.new_node(RenderNode)
         self.set_right_selected_node(self.render_node)
 
-        self.new_node(SolidColorNode)
-
         self.update_image_canvases()
 
     def new_node(self, vnode_class):
@@ -41,7 +39,7 @@ class Controller:
         return vnode, mnode
 
     def remove_node(self, vnode):
-        mnode = self.view_model_node_map(vnode)
+        mnode = self.view_model_node_map[vnode]
 
         vnode.destroy()
         mnode.destroy()

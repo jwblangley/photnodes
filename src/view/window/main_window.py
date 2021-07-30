@@ -7,6 +7,9 @@ from view.window.image_canvas import ImageCanvas
 from view.window.inspector import Inspector
 from view.window.node_canvas import NodeCanvas
 
+from view.nodes.node import BaseNode
+from view.nodes.connection import Connection
+
 CANVAS_SIZE = (1, 1)
 
 
@@ -39,11 +42,18 @@ class Window(QtWidgets.QMainWindow):
         # Menu and Actions
         self.fileMenu = self.menuBar().addMenu("File")
         self.insertMenu = self.menuBar().addMenu("Insert")
+        self.selectionMenu = self.menuBar().addMenu("Selection")
 
         self.newNodeAction = QtGui.QAction("New node", self)
         self.newNodeAction.setShortcut(QtGui.QKeySequence("Ctrl+Space"))
         self.newNodeAction.triggered.connect(self.newNodeEvent)
         self.insertMenu.addAction(self.newNodeAction)
+
+        self.deleteSelectionAction = QtGui.QAction("Delete", self)
+        self.deleteSelectionAction.setShortcut(QtGui.QKeySequence.Delete)
+        self.deleteSelectionAction.triggered.connect(self.deleteSelectionEvent)
+        self.deleteSelectionAction.setEnabled(False)
+        self.selectionMenu.addAction(self.deleteSelectionAction)
 
         self.showMaximized()
 
@@ -61,3 +71,18 @@ class Window(QtWidgets.QMainWindow):
             )
         )
         dialog.exec()
+
+    def setItemsSelected(self, value):
+        self.deleteSelectionAction.setEnabled(value)
+
+    def deleteSelectionEvent(self):
+        controller = QtWidgets.QApplication.instance().controller
+
+        for item in self.nodeCanvas.selectedItems():
+            if isinstance(item, BaseNode):
+                controller.remove_node(item)
+            elif isinstance(item, Connection):
+                controller.pass_remove_connection(item)
+                item.destroy()
+            else:
+                raise RuntimeError("Unknown item to delete")

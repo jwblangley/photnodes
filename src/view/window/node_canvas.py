@@ -13,6 +13,8 @@ class NodeCanvas(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
         self.scene = QtWidgets.QGraphicsScene()
+        self.scene.selectionChanged.connect(self.selectionChanged)
+
         self.view = QtWidgets.QGraphicsView(self.scene)
         self.layout.addWidget(self.view, 0, 0)
 
@@ -31,6 +33,10 @@ class NodeCanvas(QtWidgets.QWidget):
 
     def selectedItems(self):
         return self.scene.selectedItems()
+
+    def selectionChanged(self):
+        itemsSelected = len(self.selectedItems()) > 0
+        QtWidgets.QApplication.instance().window.setItemsSelected(itemsSelected)
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_1:

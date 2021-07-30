@@ -10,9 +10,9 @@ class TerminalNode(BaseNode):
         self.header = Header(self, title)
         self.header.setParentItem(self)
 
-        self.primary_out_socket = Socket("_primary_in", "", True, maxConnections=1)
-        self.primary_out_socket.setParentItem(self)
-        self.primary_out_socket.node = self
-        self.sockets["_primary_in"] = self.primary_out_socket
+        self.primaryInSocket = Socket("_primaryIn", "", True, maxConnections=1)
+        self.primaryInSocket.setParentItem(self)
+        self.primaryInSocket.node = self
+        self.sockets["_primaryIn"] = self.primaryInSocket
 
         self.updateSize()

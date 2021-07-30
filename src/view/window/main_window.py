@@ -10,6 +10,8 @@ from view.window.node_canvas import NodeCanvas
 from view.nodes.node import BaseNode
 from view.nodes.connection import Connection
 
+from view.nodes.functional.render_node import RenderNode
+
 CANVAS_SIZE = (1, 1)
 
 
@@ -61,7 +63,7 @@ class Window(QtWidgets.QMainWindow):
         dialog = QtWidgets.QInputDialog()
         dialog.setOption(QtWidgets.QInputDialog.UseListViewForComboBoxItems)
 
-        node_clases = {k.TITLE: k for k, v in NODE_CLASS_MAP.items()}
+        node_clases = {k.TITLE: k for k, v in NODE_CLASS_MAP.items() if k != RenderNode}
 
         dialog.setComboBoxItems(node_clases.keys())
         dialog.setWindowTitle("New node type")

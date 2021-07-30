@@ -1,6 +1,8 @@
 from PySide6 import QtWidgets
 from PySide6 import QtCore
 
+from view.nodes.functional.render_node import RenderNode
+
 ZOOM_FACTOR = 1.1
 
 
@@ -36,7 +38,11 @@ class NodeCanvas(QtWidgets.QWidget):
 
     def selectionChanged(self):
         itemsSelected = len(self.selectedItems()) > 0
-        QtWidgets.QApplication.instance().window.setItemsSelected(itemsSelected)
+        renderSelected = any([isinstance(n, RenderNode) for n in self.selectedItems()])
+
+        QtWidgets.QApplication.instance().window.setItemsSelected(
+            itemsSelected and not renderSelected
+        )
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_1:

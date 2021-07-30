@@ -4,8 +4,6 @@ from controller.attribute_passing_adapter import attribute_dict_qt_to_torch_adap
 
 from view.nodes.functional.render_node import RenderNode
 
-from view.nodes.functional.solid_color_node import SolidColorNode
-
 
 class Controller:
     def __init__(self, window):

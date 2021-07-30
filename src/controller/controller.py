@@ -118,7 +118,7 @@ class Controller:
         if img is None:
             return None, None
 
-        img = self.decode_gamma(img)
+        img = self.encode_gamma(img)
 
         return torch_to_QImage(img)
 
@@ -142,5 +142,5 @@ class Controller:
         self.right_selected_node.header.update()
         self.update_image_canvases()
 
-    def decode_gamma(self, img):
+    def encode_gamma(self, img):
         return img.pow(1 / self.render_node.gamma)

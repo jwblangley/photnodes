@@ -34,4 +34,5 @@ class RenderNode(BaseNode):
         )
 
     def calculate(self, dependencies):
-        return dependencies["_primary_in"]
+        # Apply gamma encoding
+        return dependencies["_primary_in"].pow(1 / self.gamma)

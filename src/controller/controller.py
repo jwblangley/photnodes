@@ -108,7 +108,7 @@ class Controller:
         self.window.leftImageCanvas.paintImage(left_img, left_img_buffer)
         self.window.rightImageCanvas.paintImage(right_img, right_img_buffer)
 
-    def process_node(self, vnode):
+    def process_node(self, vnode, encode_gamma=True):
         if vnode is None:
             return None, None
 
@@ -118,7 +118,8 @@ class Controller:
         if img is None:
             return None, None
 
-        img = self.encode_gamma(img)
+        if encode_gamma and not isinstance(vnode, RenderNode):
+            img = self.encode_gamma(img)
 
         return torch_to_QImage(img)
 

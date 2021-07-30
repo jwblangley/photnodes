@@ -31,6 +31,11 @@ class Controller:
         self.view_model_node_map[vnode] = mnode
         vnode.passAllAttributes()
 
+        # All non-render nodes have access to the render node's gamma
+        if vnode_class != RenderNode:
+            m_render_node = self.view_model_node_map[self.render_node]
+            mnode.set_input_connection("gamma", m_render_node._gamma_node)
+
         self.window.nodeCanvas.addNode(vnode)
         self.update_image_canvases()
 
@@ -113,6 +118,8 @@ class Controller:
         if img is None:
             return None, None
 
+        img = self.decode_gamma(img)
+
         return torch_to_QImage(img)
 
     def set_left_selected_node(self, vnode):
@@ -134,3 +141,6 @@ class Controller:
         self.right_selected_node.header.displayedRight = True
         self.right_selected_node.header.update()
         self.update_image_canvases()
+
+    def decode_gamma(self, img):
+        return img.pow(1 / self.render_node.gamma)

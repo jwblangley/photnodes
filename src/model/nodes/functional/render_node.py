@@ -20,6 +20,10 @@ class RenderNode(BaseNode):
 
         self._gamma_node = _GammaNode()
 
+    @staticmethod
+    def encode_gamma(img, gamma):
+        return img.pow(1 / gamma)
+
     def __setattr__(self, name, value):
         if name == "gamma" and value is not None:
             self._gamma_node.set_attribute("gamma", value)
@@ -35,4 +39,4 @@ class RenderNode(BaseNode):
 
     def calculate(self, dependencies):
         # Apply gamma encoding
-        return dependencies["_primary_in"].pow(1 / self.gamma)
+        return RenderNode.encode_gamma(dependencies["_primary_in"], self.gamma)

@@ -4,6 +4,8 @@ from controller.attribute_passing_adapter import attribute_dict_qt_to_torch_adap
 
 from view.nodes.functional.render_node import RenderNode
 
+from model.nodes.functional.render_node import RenderNode as MRenderNode
+
 
 class Controller:
     def __init__(self, window):
@@ -119,7 +121,7 @@ class Controller:
             return None, None
 
         if encode_gamma and not isinstance(vnode, RenderNode):
-            img = self.encode_gamma(img)
+            img = MRenderNode.encode_gamma(img, self.render_node.gamma)
 
         return torch_to_QImage(img)
 
@@ -142,6 +144,3 @@ class Controller:
         self.right_selected_node.header.displayedRight = True
         self.right_selected_node.header.update()
         self.update_image_canvases()
-
-    def encode_gamma(self, img):
-        return img.pow(1 / self.render_node.gamma)

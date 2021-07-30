@@ -1,8 +1,11 @@
 import pytest
 from unittest.mock import Mock
 
+import torch
 
 from model.nodes.node import BaseNode
+
+from model.nodes.functional.render_node import RenderNode
 
 
 class TestStartingNodeOne(BaseNode):
@@ -209,3 +212,24 @@ def test_destroy_does_not_side_effect():
     n3.destroy()
 
     assert "input" in n2.input_connections
+
+
+def test_gamma_change_in_render_node_makes_previous_dirty():
+    n1 = TestStartingNodeOne()
+
+    r1 = RenderNode()
+    r1.set_attribute("gamma", 1.0)
+
+    n1.set_input_connection("gamma", r1._gamma_node)
+
+    r1.set_input_connection("_primary_in", n1)
+
+    n1.calculate = Mock(return_value=torch.tensor([1.0]))
+
+    assert r1.process() == 1
+    n1.calculate.assert_called_once()
+
+    r1.set_attribute("gamma", 2.0)
+
+    assert r1.process() == 1
+    n1.calculate.call_count == 2

@@ -20,6 +20,10 @@ class NodeCanvas(QtWidgets.QWidget):
         self.view = QtWidgets.QGraphicsView(self.scene)
         self.layout.addWidget(self.view, 0, 0)
 
+    def closeEvent(self, event):
+        self.scene.selectionChanged.disconnect(self.selectionChanged)
+        return super().closeEvent(event)
+
     def wheelEvent(self, event):
         if event.modifiers() == QtCore.Qt.ControlModifier:
             if event.angleDelta().y() > 0:

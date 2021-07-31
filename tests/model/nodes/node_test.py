@@ -232,4 +232,4 @@ def test_gamma_change_in_render_node_makes_previous_dirty():
     r1.set_attribute("gamma", 2.0)
 
     assert r1.process() == 1
-    n1.calculate.call_count == 2
+    assert n1.calculate.call_count == 2

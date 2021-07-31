@@ -49,6 +49,12 @@ class Controller:
         vnode.destroy()
         mnode.destroy()
 
+        if self.left_selected_node is vnode:
+            self.left_selected_node = None
+
+        if self.right_selected_node is vnode:
+            self.right_selected_node = None
+
         self.update_image_canvases()
 
     def pass_attribute(self, vnode, name, value):

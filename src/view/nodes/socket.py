@@ -68,7 +68,6 @@ class Socket(QtWidgets.QGraphicsItem):
         self.scene().removeItem(self)
         for con in self.connections[::]:
             con.destroy()
-        del self
 
     def hoverEnterEvent(self, event):
         self.highlighting = True
@@ -116,6 +115,9 @@ class Socket(QtWidgets.QGraphicsItem):
 
             if isinstance(target, Socket) and target is not self:
                 self.connectTo(target, connection=self.tempNewCon)
+                QtWidgets.QApplication.instance().controller.pass_new_connection(
+                    self.tempNewCon
+                )
             else:
                 self.tempNewCon.destroy()
             self.tempNewCon = None

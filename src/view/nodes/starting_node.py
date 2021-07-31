@@ -10,9 +10,9 @@ class StartingNode(BaseNode):
         self.header = Header(self, title)
         self.header.setParentItem(self)
 
-        self.primary_out_socket = Socket("_primary_out", "", False)
-        self.primary_out_socket.setParentItem(self)
-        self.primary_out_socket.node = self
-        self.sockets["_primary_out"] = self.primary_out_socket
+        self.primaryOutSocket = Socket("_primaryOut", "", False)
+        self.primaryOutSocket.setParentItem(self)
+        self.primaryOutSocket.node = self
+        self.sockets["_primaryOut"] = self.primaryOutSocket
 
         self.updateSize()

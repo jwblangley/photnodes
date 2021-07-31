@@ -52,7 +52,6 @@ class Connection(QtWidgets.QGraphicsPathItem):
             self.targetSocket.connections.remove(self)
 
         self.scene().removeItem(self)
-        del self
 
     def hoverEnterEvent(self, event):
         if QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:
@@ -71,6 +70,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.MouseButton.LeftButton and self.canDelete:
+            QtWidgets.QApplication.instance().controller.pass_remove_connection(self)
             self.destroy()
 
     def _repeat_eq(self, other):
@@ -98,7 +98,6 @@ class Connection(QtWidgets.QGraphicsPathItem):
                 (self.sourceSocket.isInput and not self.targetSocket.isInput)
                 or (self.targetSocket.isInput and not self.sourceSocket.isInput)
             )
-            and self.targetSocket.isInput
             and self.sourceSocket.node != self.targetSocket.node
             and len(self.sourceSocket.connections) < self.sourceSocket.maxConnections
             and len(self.targetSocket.connections) < self.targetSocket.maxConnections

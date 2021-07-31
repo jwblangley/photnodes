@@ -1,11 +1,9 @@
 from PySide6 import QtWidgets
-from view.nodes.functional.solid_color_node import SolidColorNode
+from PySide6 import QtCore
 
-from view.nodes.starting_node import StartingNode
-from view.nodes.flow_node import FlowNode
-from view.nodes.terminal_node import TerminalNode
+from view.nodes.functional.render_node import RenderNode
 
-from view.nodes.socket import Socket
+ZOOM_FACTOR = 1.1
 
 
 class NodeCanvas(QtWidgets.QWidget):
@@ -17,24 +15,47 @@ class NodeCanvas(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
         self.scene = QtWidgets.QGraphicsScene()
+        self.scene.selectionChanged.connect(self.selectionChanged)
+
         self.view = QtWidgets.QGraphicsView(self.scene)
         self.layout.addWidget(self.view, 0, 0)
 
-        self.populate()
+    def closeEvent(self, event):
+        self.scene.selectionChanged.disconnect(self.selectionChanged)
+        return super().closeEvent(event)
+
+    def wheelEvent(self, event):
+        if event.modifiers() == QtCore.Qt.ControlModifier:
+            if event.angleDelta().y() > 0:
+                self.view.scale(ZOOM_FACTOR, ZOOM_FACTOR)
+            elif event.angleDelta().y() < 0:
+                self.view.scale(1 / ZOOM_FACTOR, 1 / ZOOM_FACTOR)
+
+        super().wheelEvent(event)
 
     def addNode(self, node):
         if node not in self.scene.items():
             self.scene.addItem(node)
 
-    # For testing
-    def populate(self):
-        n1 = SolidColorNode()
-        self.addNode(n1)
+    def selectedItems(self):
+        return self.scene.selectedItems()
 
-        n2 = FlowNode("Operation")
-        n2.addSocket(Socket("in", "test in", True))
-        n2.addSocket(Socket("out", "test out", False))
-        self.addNode(n2)
+    def selectionChanged(self):
+        itemsSelected = len(self.selectedItems()) > 0
+        renderSelected = any([isinstance(n, RenderNode) for n in self.selectedItems()])
 
-        n3 = TerminalNode("Output file")
-        self.addNode(n3)
+        QtWidgets.QApplication.instance().window.setItemsSelected(
+            itemsSelected and not renderSelected
+        )
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_1:
+            if len(self.selectedItems()) == 1:
+                QtWidgets.QApplication.instance().controller.set_left_selected_node(
+                    self.selectedItems()[0]
+                )
+        if event.key() == QtCore.Qt.Key_2:
+            if len(self.selectedItems()) == 1:
+                QtWidgets.QApplication.instance().controller.set_right_selected_node(
+                    self.selectedItems()[0]
+                )

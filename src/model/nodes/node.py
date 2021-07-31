@@ -2,32 +2,49 @@ class BaseNode:
     def __init__(self):
         self.input_connections = {}
 
+        self.output_connections = []
+
         self._dirty = True
         self._result = None
 
+    def destroy(self):
+        for listener in self.output_connections:
+            listener.input_connections = {
+                k: v for k, v in listener.input_connections.items() if v != self
+            }
+
     def set_input_connection(self, name, input_connection):
         self.input_connections[name] = input_connection
+        input_connection.output_connections.append(self)
+        self.flag_dirty()
 
     def remove_input_connection(self, name):
         if name in self.input_connections:
+            input_connection = self.input_connections[name]
+            input_connection.output_connections = list(
+                filter(lambda c: c != self, input_connection.output_connections)
+            )
             del self.input_connections[name]
+            self.flag_dirty()
 
-    def check_required_connections(self):
+    def check_requirements(self):
         raise NotImplementedError(
-            "check_required_connections should be implemented in subclasses"
+            "check_requirements should be implemented in subclasses"
         )
 
     def set_attribute(self, name, value):
-        if not (hasattr(self, name) and getattr(self, name) == value):
-            setattr(self, name, value)
-            self._dirty = True
+        if not hasattr(self, name):
+            raise AttributeError(f"Node does not have attribute: {name}")
+
+        setattr(self, name, value)
+        self.flag_dirty()
 
     def flag_dirty(self):
-        for node in self.input_connections.values():
-            if node.flag_dirty():
-                self._dirty = True
+        self._dirty = True
+        self._result = None
 
-        return self._dirty
+        for node in self.output_connections:
+            node.flag_dirty()
 
     def calculate(self, dependencies):
         raise NotImplementedError("calculate should be implemented in subclasses")
@@ -36,25 +53,16 @@ class BaseNode:
         if not self._dirty:
             return self._result
 
-        # Wait for dependency calculation completion
-        dependencies = {k: v.result() for k, v in dependencies.items()}
-
         self._result = self.calculate(dependencies)
         self._dirty = False
 
         return self._result
 
-    def process(self, executor, check_dirty=True):
-        if not self.check_required_connections():
-            return executor.submit(lambda: None)
-
-        if check_dirty:
-            self.flag_dirty()
+    def process(self):
+        if not self.check_requirements():
+            return None
 
         # Queue dependent results
-        dependencies = {
-            k: v.process(executor, check_dirty=False)
-            for k, v in self.input_connections.items()
-        }
+        dependencies = {k: v.process() for k, v in self.input_connections.items()}
 
-        return executor.submit(self._calculate, dependencies)
+        return self._calculate(dependencies)

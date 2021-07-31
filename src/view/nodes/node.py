@@ -1,7 +1,6 @@
 from PySide6 import QtWidgets
 from PySide6 import QtGui
 from PySide6 import QtCore
-from view.nodes.header import Header
 
 from view.utils import getTextSize
 
@@ -29,6 +28,7 @@ class BaseNode(QtWidgets.QGraphicsItem):
         self.sockets = {}
 
         self.inspectorWidget = QtWidgets.QWidget()
+        self.allVars = None
 
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
@@ -42,17 +42,17 @@ class BaseNode(QtWidgets.QGraphicsItem):
     def itemChange(self, change, value):
         if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
             inspector = QtWidgets.QApplication.instance().window.inspector
+
             if value:
                 inspector.layout.addWidget(self.inspectorWidget)
                 inspector.titleLabel.setText(f"Inspector: {self.title}")
             else:
-                self.inspectorWidget.setParent(None)
-                inspector.titleLabel.setText("Inspector")
+                self.onDeselect()
 
         return super().itemChange(change, value)
 
     def boundingRect(self):
-        return QtCore.QRect(self.x, self.y, self.w, self.h)
+        return QtCore.QRect(self.x, self.y, self.getWidth(), self.getHeight())
 
     def paint(self, painter, option, widget):
         painter.setBrush(QtGui.QBrush(self.fillColor))
@@ -68,11 +68,13 @@ class BaseNode(QtWidgets.QGraphicsItem):
         if self.header is not None:
             self.header.destroy()
 
-        for socket in self.sockets[::]:
+        for socket in self.sockets.values():
             socket.destroy()
 
         self.scene().removeItem(self)
-        del self
+
+        if self.isSelected():
+            self.onDeselect()
 
     def mouseMoveEvent(self, event):
         for node in self.scene().selectedItems():
@@ -94,6 +96,11 @@ class BaseNode(QtWidgets.QGraphicsItem):
             + self.header.h
             + self.margin
         )
+
+    def onDeselect(self):
+        self.inspectorWidget.setParent(None)
+        inspector = QtWidgets.QApplication.instance().window.inspector
+        inspector.titleLabel.setText("Inspector")
 
     def getWidth(self):
         headerWidth = self.margin + getTextSize(self.header.text).width()
@@ -130,3 +137,16 @@ class BaseNode(QtWidgets.QGraphicsItem):
                 socket.setX(self.boundingRect().left() - socket.w)
             else:
                 socket.setX(self.boundingRect().right())
+
+    def setAttribute(self, name, value):
+        setattr(self, name, value)
+        QtWidgets.QApplication.instance().controller.pass_attribute(self, name, value)
+
+    def passAllAttributes(self):
+        if self.allVars is None:
+            raise NotImplementedError("allVars should be set by subclasses")
+        for name in self.allVars:
+            value = getattr(self, name)
+            QtWidgets.QApplication.instance().controller.pass_attribute(
+                self, name, value
+            )

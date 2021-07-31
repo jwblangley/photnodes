@@ -2,7 +2,7 @@ import warnings
 
 from PySide6 import QtCore, QtWidgets, QtGui
 
-from view.utils import torch_to_QImage
+ZOOM_FACTOR = 1.1
 
 
 class ImageCanvas(QtWidgets.QScrollArea):
@@ -12,8 +12,8 @@ class ImageCanvas(QtWidgets.QScrollArea):
         self.width, self.height = size
         self.scale = 1
 
-        self.qImg_cache = None
-        self.qImg_buffer_cache = None
+        self.qImgCache = None
+        self.qImgBufferCache = None
 
         self.setWidgetResizable(False)
         self.setAlignment(QtCore.Qt.AlignCenter)
@@ -26,56 +26,52 @@ class ImageCanvas(QtWidgets.QScrollArea):
         self.label.setScaledContents(True)
         self.setWidget(self.label)
 
-        self.pixmap = QtGui.QPixmap(self.width, self.height)
-        self.pixmap.fill(QtGui.QColor("white"))
-        self.label.setPixmap(self.pixmap)
+        self.zoomLabel()
 
-        self.painter = QtGui.QPainter(self.pixmap)
+    def wheelEvent(self, event):
+        if event.modifiers() == QtCore.Qt.ControlModifier:
+            if event.angleDelta().y() > 0:
+                self.zoomLabel(factor=ZOOM_FACTOR)
+            elif event.angleDelta().y() < 0:
+                self.zoomLabel(factor=1 / ZOOM_FACTOR)
 
-        self.action_zoom_in = QtGui.QAction("Zoom in", self)
-        self.action_zoom_in.setShortcut(QtGui.QKeySequence.ZoomIn)
-        self.action_zoom_in.triggered.connect(lambda: self.zoom_label(factor=1.1))
+        super().wheelEvent(event)
 
-        self.action_zoom_out = QtGui.QAction("Zoom out", self)
-        self.action_zoom_out.setShortcut(QtGui.QKeySequence.ZoomOut)
-        self.action_zoom_out.triggered.connect(lambda: self.zoom_label(factor=1 / 1.1))
-
-        self.zoom_label()
-
-    def destroy(self):
-        self.painter.end()
-        super().destroy()
-        del self
-
-    def zoom_label(self, factor=None):
+    def zoomLabel(self, factor=None):
         if factor is not None:
             self.scale *= factor
         self.label.resize(self.width * self.scale, self.height * self.scale)
 
-    def update_label(self):
-        self.label.setPixmap(self.pixmap)
-
-    def paint_image(self, img=None, cached_only=False):
+    def paintImage(self, qImg=None, qImgBuffer=None, cachedOnly=False):
         # Buffer must be kept in memory prior to usage
 
-        if (
-            cached_only
-            and self.qImg_cache is not None
-            and self.qImg_buffer_cache is not None
-        ):
-            if img is not None:
+        if cachedOnly:
+            if qImg is not None or qImgBuffer is not None:
                 warnings.warn("Using cached image, when new image is provided")
 
-            self.painter.drawImage(0, 0, self.qImg_cache)
+            qImg = self.qImgCache
         else:
-            if img is None:
-                raise RuntimeError("Image to paint is not given")
+            if qImg is None:
+                if qImgBuffer is not None:
+                    warnings.warn("Image buffer provided with no image. Ignored")
+                self.label.setVisible(False)
+                return
+            if qImgBuffer is None:
+                raise RuntimeError("Image buffer to paint is not given")
 
-            qImg, buffer = torch_to_QImage(img)
+            self.qImgCache = qImg
+            self.qImgBufferCache = qImgBuffer
 
-            self.qImg_cache = qImg
-            self.qImg_buffer_cache = buffer
+        self.width = qImg.width()
+        self.height = qImg.height()
 
-            self.painter.drawImage(0, 0, qImg)
+        pixmap = QtGui.QPixmap(self.width, self.height)
+        pixmap.fill(QtGui.QColor("black"))
 
-        self.update_label()
+        painter = QtGui.QPainter(pixmap)
+        painter.drawImage(0, 0, qImg)
+        painter.end()
+
+        self.label.setPixmap(pixmap)
+        self.zoomLabel()
+        self.label.setVisible(True)

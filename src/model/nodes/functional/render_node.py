@@ -24,11 +24,11 @@ class RenderNode(BaseNode):
     def encode_gamma(img, gamma):
         return img.pow(1 / gamma)
 
-    def __setattr__(self, name, value):
+    def set_attribute(self, name, value):
         if name == "gamma" and value is not None:
             self._gamma_node.set_attribute("gamma", value)
 
-        return super().__setattr__(name, value)
+        return super().set_attribute(name, value)
 
     def check_requirements(self):
         return (

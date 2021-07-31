@@ -8,3 +8,9 @@ NODE_CLASS_MAP = {
     VRenderNode: MRenderNode,
     VSolidColorNode: MSolidColorNode,
 }
+
+NODE_CATEGORIES = {
+    "Generators": [
+        VSolidColorNode,
+    ]
+}

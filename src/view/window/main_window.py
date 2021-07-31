@@ -1,16 +1,13 @@
 from PySide6 import QtGui
 from PySide6 import QtWidgets
 
-from controller.node_map import NODE_CLASS_MAP
-
 from view.window.image_canvas import ImageCanvas
 from view.window.inspector import Inspector
+from view.window.new_node_dialog import NewNodeDialog
 from view.window.node_canvas import NodeCanvas
 
 from view.nodes.node import BaseNode
 from view.nodes.connection import Connection
-
-from view.nodes.functional.render_node import RenderNode
 
 CANVAS_SIZE = (1, 1)
 
@@ -60,19 +57,11 @@ class Window(QtWidgets.QMainWindow):
         self.showMaximized()
 
     def newNodeEvent(self):
-        dialog = QtWidgets.QInputDialog()
-        dialog.setOption(QtWidgets.QInputDialog.UseListViewForComboBoxItems)
+        dialog = NewNodeDialog()
 
-        node_clases = {k.TITLE: k for k, v in NODE_CLASS_MAP.items() if k != RenderNode}
-
-        dialog.setComboBoxItems(node_clases.keys())
-        dialog.setWindowTitle("New node type")
-        dialog.textValueSelected.connect(
-            lambda t: QtWidgets.QApplication.instance().controller.new_node(
-                node_clases[t]
-            )
-        )
-        dialog.exec()
+        if dialog.exec_():
+            print(dialog.selectedNode)
+            QtWidgets.QApplication.instance().controller.new_node(dialog.selectedNode)
 
     def setItemsSelected(self, value):
         self.deleteSelectionAction.setEnabled(value)

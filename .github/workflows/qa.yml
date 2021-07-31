@@ -1,4 +1,4 @@
-name: Black Format Check
+name: Quality Assurance
 
 # Run this workflow every time a new commit is on master or PR to master
 on:
@@ -12,9 +12,9 @@ on:
 jobs:
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
-  build:
+  qa:
     # Name the Job
-    name: Build
+    name: QA
     # Set the type of machine to run on
     runs-on: ubuntu-latest
     strategy:

@@ -60,7 +60,6 @@ class Window(QtWidgets.QMainWindow):
         dialog = NewNodeDialog()
 
         if dialog.exec_():
-            print(dialog.selectedNode)
             QtWidgets.QApplication.instance().controller.new_node(dialog.selectedNode)
 
     def setItemsSelected(self, value):

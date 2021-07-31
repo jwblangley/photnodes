@@ -5,7 +5,7 @@ from PySide6 import QtWidgets
 from controller.node_map import NODE_CATEGORIES
 
 
-def createTreeViewModel():
+def _createTreeViewModel():
     nodeTreeModel = QtGui.QStandardItemModel()
     rootNode = nodeTreeModel.invisibleRootItem()
 
@@ -33,6 +33,14 @@ class NewNodeDialog(QtWidgets.QDialog):
 
         self.selectedNode = None
 
+        self.nodeTreeModel = _createTreeViewModel()
+
+        self.filterModel = QtCore.QSortFilterProxyModel()
+        self.filterModel.setSourceModel(self.nodeTreeModel)
+        self.filterModel.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        self.filterModel.setRecursiveFilteringEnabled(True)
+        self.filterModel.setFilterFixedString("")
+
         self.setWindowTitle("New Node")
 
         self.layout = QtWidgets.QVBoxLayout()
@@ -40,15 +48,14 @@ class NewNodeDialog(QtWidgets.QDialog):
         self.setLayout(self.layout)
 
         self.searchEdit = QtWidgets.QLineEdit()
+        self.searchEdit.textChanged.connect(self.updateFilter)
         self.layout.addWidget(self.searchEdit)
 
-        self.nodeTreeModel = createTreeViewModel()
-
         self.nodeTreeView = QtWidgets.QTreeView()
-        self.nodeTreeView.setModel(self.nodeTreeModel)
+        self.nodeTreeView.setModel(self.filterModel)
         self.nodeTreeView.setHeaderHidden(True)
         self.nodeTreeView.expandAll()
-        self.nodeTreeView.doubleClicked.connect(self.treeViewItemSelected)
+        self.nodeTreeView.doubleClicked.connect(self.treeViewItemDoubleClicked)
         self.layout.addWidget(self.nodeTreeView)
 
         self.searchEdit.setFocus()
@@ -57,22 +64,33 @@ class NewNodeDialog(QtWidgets.QDialog):
         self.selectedNode = item.data()
         self.accept()
 
+    def updateFilter(self, filterText):
+        self.filterModel.setFilterFixedString(filterText)
+
+        # Select top child
+        idx = self.filterModel.index(0, 0)
+        while self.filterModel.hasChildren(idx):
+            idx = self.filterModel.index(0, 0, idx)
+        self.nodeTreeView.setCurrentIndex(idx)
+
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Enter or event.key() == QtCore.Qt.Key_Return:
-            index = self.nodeTreeView.currentIndex()
-            item = self.nodeTreeModel.itemFromIndex(index)
+            idx = self.nodeTreeView.currentIndex()
 
-            if item.rowCount() > 0:
-                if self.nodeTreeView.isExpanded(index):
-                    self.nodeTreeView.collapse(index)
+            item = self.nodeTreeModel.itemFromIndex(self.filterModel.mapToSource(idx))
+
+            if self.filterModel.hasChildren(idx):
+                if self.nodeTreeView.isExpanded(idx):
+                    self.nodeTreeView.collapse(idx)
                 else:
-                    self.nodeTreeView.expand(index)
-            else:
+                    self.nodeTreeView.expand(idx)
+            elif not self.nodeTreeModel.hasChildren(self.filterModel.mapToSource(idx)):
                 self.acceptNode(item)
 
         return super().keyPressEvent(event)
 
-    def treeViewItemSelected(self, index):
-        item = self.nodeTreeModel.itemFromIndex(index)
-        if item.rowCount() == 0:
+    def treeViewItemDoubleClicked(self, idx):
+        if not self.filterModel.hasChildren(idx):
+            item = self.nodeTreeModel.itemFromIndex(self.filterModel.mapToSource(idx))
+
             self.acceptNode(item)

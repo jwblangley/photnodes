@@ -41,6 +41,7 @@ class BaseNode:
 
     def flag_dirty(self):
         self._dirty = True
+        self._result = None
 
         for node in self.output_connections:
             node.flag_dirty()
@@ -57,16 +58,11 @@ class BaseNode:
 
         return self._result
 
-    def process(self, check_dirty=True):
+    def process(self):
         if not self.check_requirements():
             return None
 
-        if check_dirty:
-            self._dirty
-
         # Queue dependent results
-        dependencies = {
-            k: v.process(check_dirty=False) for k, v in self.input_connections.items()
-        }
+        dependencies = {k: v.process() for k, v in self.input_connections.items()}
 
         return self._calculate(dependencies)

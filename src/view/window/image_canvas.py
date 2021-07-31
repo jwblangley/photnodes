@@ -56,7 +56,7 @@ class ImageCanvas(QtWidgets.QScrollArea):
                     warnings.warn("Image buffer provided with no image. Ignored")
                 self.label.setVisible(False)
                 return
-            elif qImgBuffer is None:
+            if qImgBuffer is None:
                 raise RuntimeError("Image buffer to paint is not given")
 
             self.qImgCache = qImg

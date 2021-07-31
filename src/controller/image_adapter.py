@@ -29,7 +29,7 @@ def torch_to_QImage(torch_image):
     Convert CxHxW torch array [0..1] to RGB QImage
     N.B: data buffer must remain in scope for lifetime of QImage
     """
-
+    torch_image = torch_image.clone()
     torch_image *= 255
     torch_image.clamp_(0, 255)
     torch_image = torch_image.permute(1, 2, 0)

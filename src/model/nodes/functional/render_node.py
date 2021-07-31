@@ -4,6 +4,8 @@ from model.nodes.node import BaseNode
 
 
 class _GammaNode(BaseNode):
+    REQUIRES_GAMMA_CONNECTION = False
+
     def __init__(self):
         super().__init__()
         self.gamma = None
@@ -16,6 +18,8 @@ class _GammaNode(BaseNode):
 
 
 class RenderNode(BaseNode):
+    REQUIRES_GAMMA_CONNECTION = False
+
     def __init__(self):
         super().__init__()
         self.gamma = None

@@ -4,6 +4,8 @@ from model.nodes.node import BaseNode
 
 
 class SolidColorNode(BaseNode):
+    REQUIRES_GAMMA_CONNECTION = True
+
     def __init__(self):
         super().__init__()
         self.color = None

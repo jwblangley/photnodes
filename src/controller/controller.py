@@ -34,7 +34,7 @@ class Controller:
         vnode.passAllAttributes()
 
         # All non-render nodes have access to the render node's gamma
-        if vnode_class != RenderNode:
+        if mnode_class.REQUIRES_GAMMA_CONNECTION:
             m_render_node = self.view_model_node_map[self.render_node]
             mnode.set_input_connection("gamma", m_render_node._gamma_node)
 

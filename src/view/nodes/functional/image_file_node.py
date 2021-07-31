@@ -15,7 +15,7 @@ class ImageFileNode(StartingNode):
         self.allVars = ["path", "gammaDecode"]
 
         self.path = ""
-        self.gammaDecode = 1.0
+        self.gammaDecode = 2.2
 
         # Define node
 

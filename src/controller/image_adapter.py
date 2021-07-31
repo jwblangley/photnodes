@@ -29,18 +29,21 @@ def torch_to_QImage(torch_image):
     Convert CxHxW torch array [0..1] to RGB QImage
     N.B: data buffer must remain in scope for lifetime of QImage
     """
-    torch_image = torch_image * 255
-    torch_image = torch_image.clamp(0, 255)
+
+    torch_image *= 255
+    torch_image.clamp_(0, 255)
     torch_image = torch_image.permute(1, 2, 0)
+
+    img = torch_image.cpu().numpy()
     # Flip channel order to match expected
-    torch_image = torch.flip(torch_image, (2,))
-    ones = torch.ones(torch_image.size(0), torch_image.size(1), 4) * 255
-    ones[:, :, :-1] = torch_image
-    numpy_image = np.ascontiguousarray(ones.cpu().numpy().astype(np.uint8))
+    np.flip(img, axis=2)
 
-    height, width, channels = numpy_image.shape
+    rgba = np.full((img.shape[0], img.shape[1], 4), 255, dtype=np.uint8)
+    rgba[:, :, :-1] = img
 
-    data = QtCore.QByteArray(numpy_image.data.tobytes())
+    height, width, channels = rgba.shape
+
+    data = QtCore.QByteArray(rgba.data.tobytes())
 
     qImg = QtGui.QImage(
         data,

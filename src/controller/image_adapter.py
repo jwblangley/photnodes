@@ -36,7 +36,7 @@ def torch_to_QImage(torch_image):
 
     img = torch_image.cpu().numpy()
     # Flip channel order to match expected
-    np.flip(img, axis=2)
+    img = np.flip(img, axis=2)
 
     rgba = np.full((img.shape[0], img.shape[1], 4), 255, dtype=np.uint8)
     rgba[:, :, :-1] = img

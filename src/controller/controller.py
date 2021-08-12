@@ -135,7 +135,8 @@ class Controller:
             return None, None
 
         if max_size is not None:
-            img = tf.resize(img, max_size // 2, max_size=max_size)
+            if max(img.shape) >= max_size:
+                img = tf.resize(img, max_size // 2, max_size=max_size)
 
         if encode_gamma and not isinstance(vnode, RenderNode):
             img = MRenderNode.encode_gamma(img, self.render_node.gamma)

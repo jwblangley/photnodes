@@ -5,14 +5,18 @@
 ## Summary of issue
 []
 
-### Consequences (including potential)
+## Steps to reproduce
 []
 
-## Steps to reproduce
+### Consequences (including potential)
 []
 
 ## Screenshots
 []
 
+## Suggested fix/outcome
+<!-- Please describe your idea for the correct fix for this.
+Whether that is a technical solution, or your idea for how the final user experience should be to resolve this, both are very useful for the completion of this issue. -->
+[]
 ## Checklist
 * [ ] Added issue label(s)

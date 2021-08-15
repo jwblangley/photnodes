@@ -2,10 +2,10 @@ from PySide6 import QtCore, QtWidgets, QtGui
 
 
 class ColorInput(QtWidgets.QWidget):
-    def __init__(self, text, default, callback):
+    def __init__(self, label, default, callback):
         super().__init__()
 
-        self.text = text
+        self.label = label
         self.default = default
         self.callback = callback
 
@@ -16,7 +16,7 @@ class ColorInput(QtWidgets.QWidget):
         self.colorDialog = QtWidgets.QColorDialog()
         self.colorDialog.colorSelected.connect(self.colorChosen)
 
-        self.colorPickerLabel = QtWidgets.QLabel(text)
+        self.colorPickerLabel = QtWidgets.QLabel(label)
         self.layout.addWidget(self.colorPickerLabel)
 
         self.colorPickerVisual = QtWidgets.QLabel()

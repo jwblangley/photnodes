@@ -6,3 +6,13 @@ __pycache__
 # IDE
 .vscode
 .env
+
+# Images
+*.nef
+*.NEF
+*.png
+*.PNG
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG

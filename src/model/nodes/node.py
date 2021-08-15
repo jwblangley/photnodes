@@ -27,7 +27,7 @@ class BaseNode:
             del self.input_connections[name]
             self.flag_dirty()
 
-    def check_requirements(self):
+    def check_requirements(self, dependencies):
         raise NotImplementedError(
             "check_requirements should be implemented in subclasses"
         )
@@ -59,10 +59,10 @@ class BaseNode:
         return self._result
 
     def process(self):
-        if not self.check_requirements():
-            return None
-
         # Queue dependent results
         dependencies = {k: v.process() for k, v in self.input_connections.items()}
+
+        if not self.check_requirements(dependencies):
+            return None
 
         return self._calculate(dependencies)

@@ -1,3 +1,5 @@
+import torchvision.transforms.functional as ttf
+
 from controller.image_adapter import torch_to_QImage
 from controller.node_map import NODE_CLASS_MAP
 from controller.attribute_passing_adapter import attribute_dict_qt_to_torch_adapter
@@ -5,6 +7,8 @@ from controller.attribute_passing_adapter import attribute_dict_qt_to_torch_adap
 from view.nodes.functional.render_node import RenderNode
 
 from model.nodes.functional.render_node import RenderNode as MRenderNode
+
+MAX_PREVIEW_SIZE = 1024
 
 
 class Controller:
@@ -33,8 +37,8 @@ class Controller:
         self.view_model_node_map[vnode] = mnode
         vnode.passAllAttributes()
 
-        # All non-render nodes have access to the render node's gamma
-        if vnode_class != RenderNode:
+        # Required nodes have access to the render node's gamma
+        if mnode_class.REQUIRES_GAMMA_CONNECTION:
             m_render_node = self.view_model_node_map[self.render_node]
             mnode.set_input_connection("gamma", m_render_node._gamma_node)
 
@@ -110,13 +114,17 @@ class Controller:
         self.update_image_canvases()
 
     def update_image_canvases(self):
-        left_img, left_img_buffer = self.process_node(self.left_selected_node)
-        right_img, right_img_buffer = self.process_node(self.right_selected_node)
+        left_img, left_img_buffer = self.process_node(
+            self.left_selected_node, max_size=MAX_PREVIEW_SIZE
+        )
+        right_img, right_img_buffer = self.process_node(
+            self.right_selected_node, max_size=MAX_PREVIEW_SIZE
+        )
 
         self.window.leftImageCanvas.paintImage(left_img, left_img_buffer)
         self.window.rightImageCanvas.paintImage(right_img, right_img_buffer)
 
-    def process_node(self, vnode, encode_gamma=True):
+    def process_node(self, vnode, encode_gamma=True, max_size=None):
         if vnode is None:
             return None, None
 
@@ -125,6 +133,10 @@ class Controller:
 
         if img is None:
             return None, None
+
+        if max_size is not None:
+            if max(img.shape) >= max_size:
+                img = ttf.resize(img, max_size // 2, max_size=max_size)
 
         if encode_gamma and not isinstance(vnode, RenderNode):
             img = MRenderNode.encode_gamma(img, self.render_node.gamma)

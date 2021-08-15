@@ -1,4 +1,4 @@
-import torchvision.transforms.functional as tf
+import torchvision.transforms.functional as ttf
 
 from controller.image_adapter import torch_to_QImage
 from controller.node_map import NODE_CLASS_MAP
@@ -8,7 +8,7 @@ from view.nodes.functional.render_node import RenderNode
 
 from model.nodes.functional.render_node import RenderNode as MRenderNode
 
-MAX_PREVIEW_SIZE = 4096
+MAX_PREVIEW_SIZE = 1024
 
 
 class Controller:
@@ -37,7 +37,7 @@ class Controller:
         self.view_model_node_map[vnode] = mnode
         vnode.passAllAttributes()
 
-        # All non-render nodes have access to the render node's gamma
+        # Required nodes have access to the render node's gamma
         if mnode_class.REQUIRES_GAMMA_CONNECTION:
             m_render_node = self.view_model_node_map[self.render_node]
             mnode.set_input_connection("gamma", m_render_node._gamma_node)
@@ -136,7 +136,7 @@ class Controller:
 
         if max_size is not None:
             if max(img.shape) >= max_size:
-                img = tf.resize(img, max_size // 2, max_size=max_size)
+                img = ttf.resize(img, max_size // 2, max_size=max_size)
 
         if encode_gamma and not isinstance(vnode, RenderNode):
             img = MRenderNode.encode_gamma(img, self.render_node.gamma)

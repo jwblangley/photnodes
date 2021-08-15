@@ -3,7 +3,6 @@ import os
 from PySide6 import QtWidgets
 
 
-
 class FileInput(QtWidgets.QWidget):
     def __init__(self, label, default, callback):
         super().__init__()

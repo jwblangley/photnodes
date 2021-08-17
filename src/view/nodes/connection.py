@@ -14,6 +14,8 @@ class Connection(QtWidgets.QGraphicsPathItem):
     def __init__(self, sourceSocket=None, targetSocket=None, **kwargs):
         super().__init__(**kwargs)
 
+        self.setCursor(QtCore.Qt.PointingHandCursor)
+
         self.lineColor = QtGui.QColor(10, 10, 10)
         self.selectedColor = QtGui.QColor(0, 0, 255)
         self.deleteColor = QtGui.QColor(255, 0, 0)
@@ -56,14 +58,12 @@ class Connection(QtWidgets.QGraphicsPathItem):
     def hoverEnterEvent(self, event):
         if QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:
             self.canDelete = True
-            self.setCursor(QtCore.Qt.PointingHandCursor)
             self.update()
 
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
         self.canDelete = False
-        self.setCursor(QtCore.Qt.ArrowCursor)
         self.update()
 
         super().hoverLeaveEvent(event)

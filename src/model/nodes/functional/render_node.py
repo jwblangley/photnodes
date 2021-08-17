@@ -47,9 +47,9 @@ class RenderNode(BaseNode):
         if self.gamma <= 0:
             raise NodeProcessError(self, "gamma is not a positive number")
         if "_primary_in" not in dependencies:
-            raise NodeProcessError(self, "primary input is not provided")
+            raise NodeProcessError(self, "primary input dependency is not provided")
         if not isinstance(dependencies["_primary_in"], torch.Tensor):
-            raise NodeProcessError(self, "primary input is not a tensor")
+            raise NodeProcessError(self, "primary input dependency is not a tensor")
 
     def calculate(self, dependencies):
         # Apply gamma encoding

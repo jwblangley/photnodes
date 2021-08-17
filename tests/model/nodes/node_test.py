@@ -28,7 +28,7 @@ class TestOperationNodeAddTwo(BaseNode):
 
     def check_requirements(self, dependencies):
         if "input" not in dependencies:
-            raise NodeProcessError("No input")
+            raise NodeProcessError(self, "No input")
 
     def calculate(self, dependencies):
         return dependencies["input"] + 2
@@ -41,9 +41,9 @@ class TestOperationNodeAdd(BaseNode):
 
     def check_requirements(self, dependencies):
         if "input1" not in dependencies:
-            raise NodeProcessError("No input1")
+            raise NodeProcessError(self, "No input1")
         if "input2" not in dependencies:
-            raise NodeProcessError("No input2")
+            raise NodeProcessError(self, "No input2")
 
     def calculate(self, dependencies):
         return dependencies["input1"] + dependencies["input2"]

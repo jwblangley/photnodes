@@ -62,7 +62,7 @@ class Window(QtWidgets.QMainWindow):
         if dialog.exec_():
             QtWidgets.QApplication.instance().controller.new_node(dialog.selectedNode)
 
-    def setItemsSelected(self, value):
+    def setIsItemSelected(self, value):
         self.deleteSelectionAction.setEnabled(value)
 
     def deleteSelectionEvent(self):

@@ -41,12 +41,19 @@ class NodeCanvas(QtWidgets.QWidget):
     def selectedItems(self):
         return self.scene.selectedItems()
 
+    def clearSelection(self):
+        return self.scene.clearSelection()
+
+    def selectItem(self, item):
+        self.clearSelection()
+        item.setSelected(True)
+
     def selectionChanged(self):
-        itemsSelected = len(self.selectedItems()) > 0
+        itemSelected = len(self.selectedItems()) > 0
         renderSelected = any([isinstance(n, RenderNode) for n in self.selectedItems()])
 
-        QtWidgets.QApplication.instance().window.setItemsSelected(
-            itemsSelected and not renderSelected
+        QtWidgets.QApplication.instance().window.setIsItemSelected(
+            itemSelected and not renderSelected
         )
 
     def keyPressEvent(self, event):

@@ -22,6 +22,9 @@ class Window(QtWidgets.QMainWindow):
         self.widget = QtWidgets.QWidget()
         self.setCentralWidget(self.widget)
 
+        self.statusLabel = QtWidgets.QLabel()
+        self.statusBar().addPermanentWidget(self.statusLabel)
+
         self.layout = QtWidgets.QGridLayout()
         self.layout.setSpacing(10)
         self.widget.setLayout(self.layout)
@@ -55,6 +58,9 @@ class Window(QtWidgets.QMainWindow):
         self.selectionMenu.addAction(self.deleteSelectionAction)
 
         self.showMaximized()
+
+    def showStatus(self, status):
+        self.statusLabel.setText(status)
 
     def newNodeEvent(self):
         dialog = NewNodeDialog()

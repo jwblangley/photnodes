@@ -29,6 +29,12 @@ class Controller:
 
         self.update_image_canvases()
 
+    def report_status(self, status):
+        self.window.showStatus(status)
+
+    def clear_report_status(self):
+        self.window.showStatus("")
+
     def new_node(self, vnode_class):
         mnode_class = NODE_CLASS_MAP[vnode_class]
 
@@ -116,19 +122,28 @@ class Controller:
         self.update_image_canvases()
 
     def update_image_canvases(self):
+        self.clear_report_status()
+
         try:
             left_img, left_img_buffer = self.process_node(
                 self.left_selected_node, max_size=MAX_PREVIEW_SIZE
             )
+        except NodeProcessError as npe:
+            self.report_status(str(npe))
+            left_img = None
+            left_img_buffer = None
+
+        try:
             right_img, right_img_buffer = self.process_node(
                 self.right_selected_node, max_size=MAX_PREVIEW_SIZE
             )
-
-            self.window.leftImageCanvas.paintImage(left_img, left_img_buffer)
-            self.window.rightImageCanvas.paintImage(right_img, right_img_buffer)
-
         except NodeProcessError as npe:
-            print(str(npe))
+            self.report_status(str(npe))
+            right_img = None
+            right_img_buffer = None
+
+        self.window.leftImageCanvas.paintImage(left_img, left_img_buffer)
+        self.window.rightImageCanvas.paintImage(right_img, right_img_buffer)
 
     def process_node(self, vnode, encode_gamma=True, max_size=None):
         if vnode is None:

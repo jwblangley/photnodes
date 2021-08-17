@@ -62,7 +62,6 @@ class BaseNode:
         # Queue dependent results
         dependencies = {k: v.process() for k, v in self.input_connections.items()}
 
-        if not self.check_requirements(dependencies):
-            return None
+        self.check_requirements(dependencies)
 
         return self._calculate(dependencies)

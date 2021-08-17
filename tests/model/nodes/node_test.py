@@ -6,6 +6,7 @@ import torch
 from model.nodes.node import BaseNode
 
 from model.nodes.functional.render_node import RenderNode
+from model.nodes.node_process_error import NodeProcessError
 
 
 class TestStartingNodeOne(BaseNode):
@@ -14,7 +15,7 @@ class TestStartingNodeOne(BaseNode):
         self.test = None
 
     def check_requirements(self, dependencies):
-        return True
+        pass
 
     def calculate(self, dependencies):
         return 1
@@ -26,7 +27,8 @@ class TestOperationNodeAddTwo(BaseNode):
         self.test = None
 
     def check_requirements(self, dependencies):
-        return "input" in dependencies
+        if "input" not in dependencies:
+            raise NodeProcessError("No input")
 
     def calculate(self, dependencies):
         return dependencies["input"] + 2
@@ -38,7 +40,10 @@ class TestOperationNodeAdd(BaseNode):
         self.test = None
 
     def check_requirements(self, dependencies):
-        return "input1" in dependencies and "input2" in dependencies
+        if "input1" not in dependencies:
+            raise NodeProcessError("No input1")
+        if "input2" not in dependencies:
+            raise NodeProcessError("No input2")
 
     def calculate(self, dependencies):
         return dependencies["input1"] + dependencies["input2"]
@@ -60,20 +65,22 @@ def test_basic_operation():
     assert n2.process() == 3
 
 
-def test_no_required_input_returns_none():
+def test_no_required_input_raises_processing_error():
     n2 = TestOperationNodeAddTwo()
 
-    assert n2.process() is None
+    with pytest.raises(NodeProcessError):
+        n2.process()
 
 
-def test_removed_required_input_returns_none():
+def test_removed_required_input_raises_processing_error():
     n1 = TestStartingNodeOne()
     n2 = TestOperationNodeAddTwo()
 
     n2.set_input_connection("input", n1)
     n2.remove_input_connection("input")
 
-    assert n2.process() is None
+    with pytest.raises(NodeProcessError):
+        n2.process()
 
 
 def test_basic_multi_input_operation():

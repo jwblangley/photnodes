@@ -3,6 +3,7 @@ import torchvision.transforms.functional as ttf
 from controller.image_adapter import torch_to_QImage
 from controller.node_map import NODE_CLASS_MAP
 from controller.attribute_passing_adapter import attribute_dict_qt_to_torch_adapter
+from model.nodes.node_process_error import NodeProcessError
 
 from view.nodes.functional.render_node import RenderNode
 
@@ -115,15 +116,19 @@ class Controller:
         self.update_image_canvases()
 
     def update_image_canvases(self):
-        left_img, left_img_buffer = self.process_node(
-            self.left_selected_node, max_size=MAX_PREVIEW_SIZE
-        )
-        right_img, right_img_buffer = self.process_node(
-            self.right_selected_node, max_size=MAX_PREVIEW_SIZE
-        )
+        try:
+            left_img, left_img_buffer = self.process_node(
+                self.left_selected_node, max_size=MAX_PREVIEW_SIZE
+            )
+            right_img, right_img_buffer = self.process_node(
+                self.right_selected_node, max_size=MAX_PREVIEW_SIZE
+            )
 
-        self.window.leftImageCanvas.paintImage(left_img, left_img_buffer)
-        self.window.rightImageCanvas.paintImage(right_img, right_img_buffer)
+            self.window.leftImageCanvas.paintImage(left_img, left_img_buffer)
+            self.window.rightImageCanvas.paintImage(right_img, right_img_buffer)
+
+        except NodeProcessError as npe:
+            print(str(npe))
 
     def process_node(self, vnode, encode_gamma=True, max_size=None):
         if vnode is None:
@@ -131,9 +136,6 @@ class Controller:
 
         mnode = self.view_model_node_map[vnode]
         img = mnode.process()
-
-        if img is None:
-            return None, None
 
         if max_size is not None:
             if max(img.shape) >= max_size:

@@ -43,6 +43,7 @@ class Controller:
             mnode.set_input_connection("gamma", m_render_node._gamma_node)
 
         self.window.nodeCanvas.addNode(vnode)
+        self.window.nodeCanvas.selectItem(vnode)
         self.update_image_canvases()
 
         return vnode, mnode

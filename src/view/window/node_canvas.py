@@ -44,9 +44,11 @@ class NodeCanvas(QtWidgets.QWidget):
     def clearSelection(self):
         return self.scene.clearSelection()
 
-    def selectItem(self, item):
+    def selectItem(self, item, centerInScene=False):
         self.clearSelection()
         item.setSelected(True)
+        if centerInScene:
+            self.scene.setSceneRect(item.sceneBoundingRect())
 
     def selectionChanged(self):
         itemSelected = len(self.selectedItems()) > 0

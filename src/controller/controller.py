@@ -29,11 +29,21 @@ class Controller:
 
         self.update_image_canvases()
 
-    def report_status(self, status):
-        self.window.showStatus(status)
+    def get_vnode_from_mnode(self, mnode):
+        """
+        Should be avoided when possible in favour of dictionary lookup with view_model_node_map
+        """
+        for k, v in self.view_model_node_map.items():
+            if v == mnode:
+                return k
+
+        return None
+
+    def report_status(self, status, status_source=None):
+        self.window.showStatus(status, status_source)
 
     def clear_report_status(self):
-        self.window.showStatus("")
+        self.window.clearStatus()
 
     def new_node(self, vnode_class):
         mnode_class = NODE_CLASS_MAP[vnode_class]
@@ -129,7 +139,9 @@ class Controller:
                 self.left_selected_node, max_size=MAX_PREVIEW_SIZE
             )
         except NodeProcessError as npe:
-            self.report_status(str(npe))
+            self.report_status(
+                str(npe), status_source=self.get_vnode_from_mnode(npe.node)
+            )
             left_img = None
             left_img_buffer = None
 
@@ -138,7 +150,9 @@ class Controller:
                 self.right_selected_node, max_size=MAX_PREVIEW_SIZE
             )
         except NodeProcessError as npe:
-            self.report_status(str(npe))
+            self.report_status(
+                str(npe), status_source=self.get_vnode_from_mnode(npe.node)
+            )
             right_img = None
             right_img_buffer = None
 

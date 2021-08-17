@@ -1,9 +1,11 @@
 from PySide6 import QtWidgets
 from PySide6 import QtGui
-from view.inputs.colour_input import ColorInput
 from view.inputs.text_input import TextInput
 
 from view.nodes.terminal_node import TerminalNode
+
+from view.theme import theme
+
 
 DEFAULT_GAMMA = 2.2
 
@@ -24,7 +26,7 @@ class RenderNode(TerminalNode):
         # Define inspector widget
         self.inspectorWidget = QtWidgets.QWidget()
         self.iwLayout = QtWidgets.QVBoxLayout()
-        self.iwLayout.setSpacing(10)
+        self.iwLayout.setSpacing(theme.spacing(1))
         self.inspectorWidget.setLayout(self.iwLayout)
 
         self.gammaPicker = TextInput(

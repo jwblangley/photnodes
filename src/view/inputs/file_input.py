@@ -2,6 +2,8 @@ import os
 
 from PySide6 import QtWidgets
 
+from view.theme import theme
+
 
 class FileInput(QtWidgets.QWidget):
     def __init__(self, label, default, callback):
@@ -15,7 +17,7 @@ class FileInput(QtWidgets.QWidget):
             self.default = default
 
         self.layout = QtWidgets.QHBoxLayout()
-        self.layout.setSpacing(10)
+        self.layout.setSpacing(theme.spacing(1))
         self.setLayout(self.layout)
 
         self.fileLabel = QtWidgets.QLabel(self.label)

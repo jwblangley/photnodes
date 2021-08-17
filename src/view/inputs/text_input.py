@@ -1,4 +1,6 @@
-from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6 import QtWidgets
+
+from view.theme import theme
 
 
 class TextInput(QtWidgets.QWidget):
@@ -11,7 +13,7 @@ class TextInput(QtWidgets.QWidget):
         self.validator = validator
 
         self.layout = QtWidgets.QHBoxLayout()
-        self.layout.setSpacing(10)
+        self.layout.setSpacing(theme.spacing(1))
         self.setLayout(self.layout)
 
         self.textLabel = QtWidgets.QLabel(self.label)

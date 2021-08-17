@@ -1,5 +1,7 @@
 from PySide6 import QtCore, QtWidgets, QtGui
 
+from view.theme import theme
+
 
 class ColorInput(QtWidgets.QWidget):
     def __init__(self, label, default, callback):
@@ -10,7 +12,7 @@ class ColorInput(QtWidgets.QWidget):
         self.callback = callback
 
         self.layout = QtWidgets.QHBoxLayout()
-        self.layout.setSpacing(10)
+        self.layout.setSpacing(theme.spacing(1))
         self.setLayout(self.layout)
 
         self.colorDialog = QtWidgets.QColorDialog()
@@ -27,7 +29,9 @@ class ColorInput(QtWidgets.QWidget):
         self.colorPickerVisual.mousePressEvent = lambda e: self.colorDialog.show()
         self.layout.addWidget(self.colorPickerVisual)
 
-        self.visualPixmap = QtGui.QPixmap(self.colorPickerVisual.width(), 20)
+        self.visualPixmap = QtGui.QPixmap(
+            self.colorPickerVisual.width(), theme.spacing(2)
+        )
         self.visualPixmap.fill(self.default)
         self.colorPickerVisual.setPixmap(self.visualPixmap)
 

@@ -5,6 +5,8 @@ from view.inputs.text_input import TextInput
 
 from view.nodes.starting_node import StartingNode
 
+from view.theme import theme
+
 
 class SolidColorNode(StartingNode):
     TITLE = "Solid color"
@@ -24,7 +26,7 @@ class SolidColorNode(StartingNode):
         # Define inspector widget
         self.inspectorWidget = QtWidgets.QWidget()
         self.iwLayout = QtWidgets.QVBoxLayout()
-        self.iwLayout.setSpacing(10)
+        self.iwLayout.setSpacing(theme.spacing(1))
         self.inspectorWidget.setLayout(self.iwLayout)
 
         self.colorPicker = ColorInput(

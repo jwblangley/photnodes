@@ -8,14 +8,13 @@ from qt_material import apply_stylesheet
 from controller.controller import Controller
 
 from view.window.main_window import Window
-
-THEME = "dark_teal.xml"
+from view.theme import theme
 
 if __name__ == "__main__":
     torch.autograd.set_grad_enabled(False)
 
     app = QtWidgets.QApplication(sys.argv)
-    apply_stylesheet(app, theme=THEME)
+    apply_stylesheet(app, theme=theme.qt_material_theme)
 
     window = Window()
     controller = Controller(window)

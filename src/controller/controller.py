@@ -3,6 +3,7 @@ import torchvision.transforms.functional as ttf
 from controller.image_adapter import torch_to_QImage
 from controller.node_map import NODE_CLASS_MAP
 from controller.attribute_passing_adapter import attribute_dict_qt_to_torch_adapter
+from model.nodes.node_process_error import NodeProcessError
 
 from view.nodes.functional.render_node import RenderNode
 
@@ -27,6 +28,22 @@ class Controller:
         self.set_right_selected_node(self.render_node)
 
         self.update_image_canvases()
+
+    def get_vnode_from_mnode(self, mnode):
+        """
+        Should be avoided when possible in favour of dictionary lookup with view_model_node_map
+        """
+        for k, v in self.view_model_node_map.items():
+            if v == mnode:
+                return k
+
+        return None
+
+    def report_status(self, status, status_source=None):
+        self.window.showStatus(status, status_source)
+
+    def clear_report_status(self):
+        self.window.clearStatus()
 
     def new_node(self, vnode_class):
         mnode_class = NODE_CLASS_MAP[vnode_class]
@@ -115,12 +132,29 @@ class Controller:
         self.update_image_canvases()
 
     def update_image_canvases(self):
-        left_img, left_img_buffer = self.process_node(
-            self.left_selected_node, max_size=MAX_PREVIEW_SIZE
-        )
-        right_img, right_img_buffer = self.process_node(
-            self.right_selected_node, max_size=MAX_PREVIEW_SIZE
-        )
+        self.clear_report_status()
+
+        try:
+            left_img, left_img_buffer = self.process_node(
+                self.left_selected_node, max_size=MAX_PREVIEW_SIZE
+            )
+        except NodeProcessError as npe:
+            self.report_status(
+                str(npe), status_source=self.get_vnode_from_mnode(npe.node)
+            )
+            left_img = None
+            left_img_buffer = None
+
+        try:
+            right_img, right_img_buffer = self.process_node(
+                self.right_selected_node, max_size=MAX_PREVIEW_SIZE
+            )
+        except NodeProcessError as npe:
+            self.report_status(
+                str(npe), status_source=self.get_vnode_from_mnode(npe.node)
+            )
+            right_img = None
+            right_img_buffer = None
 
         self.window.leftImageCanvas.paintImage(left_img, left_img_buffer)
         self.window.rightImageCanvas.paintImage(right_img, right_img_buffer)
@@ -131,9 +165,6 @@ class Controller:
 
         mnode = self.view_model_node_map[vnode]
         img = mnode.process()
-
-        if img is None:
-            return None, None
 
         if max_size is not None:
             if max(img.shape) >= max_size:

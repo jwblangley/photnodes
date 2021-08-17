@@ -10,8 +10,10 @@ from model.image_io.rawpy.rawpy_io import (
 
 MAX_16_BIT = 2 ** 16 - 1
 
+NON_RAW_DECODE_GAMMA = 2.2
 
-def _rawpy_to_torch_adapter(path, decoding_gamma):
+
+def _rawpy_to_torch_adapter(path):
     try:
         np_img = rawpy_load_neutral_image_16_bit(path).astype(np.int32)
         img = torch.from_numpy(np_img)
@@ -22,10 +24,10 @@ def _rawpy_to_torch_adapter(path, decoding_gamma):
         # Handel non-raw images
         img = Image.open(path)
         img = tf.to_tensor(img)
-        img = img.pow(decoding_gamma)
+        img = img.pow(NON_RAW_DECODE_GAMMA)
 
     return img
 
 
-def load_neutral_image(path, decoding_gamma):
-    return _rawpy_to_torch_adapter(path, decoding_gamma)
+def load_neutral_image(path):
+    return _rawpy_to_torch_adapter(path)

@@ -54,6 +54,7 @@ class Connection(QtWidgets.QGraphicsPathItem):
         # Disable multiple selection
         if event.modifiers() == QtCore.Qt.ControlModifier:
             event.ignore()
+        self.scene().clearSelection()
 
     def _repeat_eq(self, other):
         if not isinstance(other, Connection):

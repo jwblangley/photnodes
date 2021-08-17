@@ -1,3 +1,4 @@
+from PySide6 import QtCore
 from PySide6 import QtGui
 from PySide6 import QtWidgets
 
@@ -16,11 +17,17 @@ class Window(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.statusSceneSource = None
+
         # Layout
         self.setWindowTitle("Photnodes")
 
         self.widget = QtWidgets.QWidget()
         self.setCentralWidget(self.widget)
+
+        self.statusLabel = QtWidgets.QLabel()
+        self.statusLabel.mousePressEvent = self.statusLabelPressEvent
+        self.statusBar().addPermanentWidget(self.statusLabel)
 
         self.layout = QtWidgets.QGridLayout()
         self.layout.setSpacing(10)
@@ -55,6 +62,23 @@ class Window(QtWidgets.QMainWindow):
         self.selectionMenu.addAction(self.deleteSelectionAction)
 
         self.showMaximized()
+
+    def showStatus(self, status, sceneSource=None):
+        self.statusLabel.setText(status)
+        self.statusLabel.setVisible(True)
+
+        if sceneSource is not None:
+            self.statusSceneSource = sceneSource
+            self.statusLabel.setCursor(QtCore.Qt.PointingHandCursor)
+
+    def clearStatus(self):
+        self.statusLabel.setVisible(False)
+        self.statusSceneSource = None
+        self.statusLabel.setCursor(QtCore.Qt.ArrowCursor)
+
+    def statusLabelPressEvent(self, e):
+        if self.statusSceneSource is not None:
+            self.nodeCanvas.selectItem(self.statusSceneSource, centerInScene=True)
 
     def newNodeEvent(self):
         dialog = NewNodeDialog()

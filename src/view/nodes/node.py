@@ -43,6 +43,7 @@ class BaseNode(QtWidgets.QGraphicsItem):
         # Disable multiple selection
         if event.modifiers() == QtCore.Qt.ControlModifier:
             event.ignore()
+        self.scene().clearSelection()
 
     def itemChange(self, change, value):
         if change == QtWidgets.QGraphicsItem.ItemSelectedChange:

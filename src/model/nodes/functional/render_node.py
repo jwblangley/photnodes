@@ -1,17 +1,22 @@
 import torch
 
 from model.nodes.node import BaseNode
+from model.nodes.node_process_error import NodeProcessError
 
 
 class _GammaNode(BaseNode):
     REQUIRES_GAMMA_CONNECTION = False
 
-    def __init__(self):
+    def __init__(self, parent):
         super().__init__()
+        self.parent = parent
         self.gamma = None
 
     def check_requirements(self, dependencies):
-        return isinstance(self.gamma, float) and self.gamma > 0
+        if not isinstance(self.gamma, float):
+            raise NodeProcessError(self.parent, "gamma is not a floating point number")
+        if self.gamma <= 0:
+            raise NodeProcessError(self.parent, "gamma is not a positive number")
 
     def calculate(self, dependencies):
         return self.gamma
@@ -24,7 +29,7 @@ class RenderNode(BaseNode):
         super().__init__()
         self.gamma = None
 
-        self._gamma_node = _GammaNode()
+        self._gamma_node = _GammaNode(self)
 
     @staticmethod
     def encode_gamma(img, gamma):
@@ -37,12 +42,14 @@ class RenderNode(BaseNode):
         return super().set_attribute(name, value)
 
     def check_requirements(self, dependencies):
-        return (
-            isinstance(self.gamma, float)
-            and self.gamma > 0
-            and "_primary_in" in dependencies
-            and isinstance(dependencies["_primary_in"], torch.Tensor)
-        )
+        if not isinstance(self.gamma, float):
+            raise NodeProcessError(self, "gamma is not a floating point number")
+        if self.gamma <= 0:
+            raise NodeProcessError(self, "gamma is not a positive number")
+        if "_primary_in" not in dependencies:
+            raise NodeProcessError(self, "primary input dependency is not provided")
+        if not isinstance(dependencies["_primary_in"], torch.Tensor):
+            raise NodeProcessError(self, "primary input dependency is not a tensor")
 
     def calculate(self, dependencies):
         # Apply gamma encoding

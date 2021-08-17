@@ -13,10 +13,9 @@ class ImageFileNode(StartingNode):
         super().__init__(ImageFileNode.TITLE, **kwargs)
 
         # Define vars
-        self.allVars = ["path", "gammaDecode"]
+        self.allVars = ["path"]
 
         self.path = ""
-        self.gammaDecode = 2.2
 
         # Define node
 
@@ -32,11 +31,3 @@ class ImageFileNode(StartingNode):
             lambda value: self.setAttribute("path", value),
         )
         self.iwLayout.addWidget(self.pathPicker)
-
-        self.gammaDecodePicker = TextInput(
-            "Decoding gamma:",
-            self.gammaDecode,
-            lambda value: self.setAttribute("gammaDecode", float(value)),
-            validator=QtGui.QDoubleValidator(),
-        )
-        self.iwLayout.addWidget(self.gammaDecodePicker)

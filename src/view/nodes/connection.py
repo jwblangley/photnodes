@@ -18,7 +18,6 @@ class Connection(QtWidgets.QGraphicsPathItem):
 
         self.lineColor = QtGui.QColor(10, 10, 10)
         self.selectedColor = QtGui.QColor(0, 0, 255)
-        self.deleteColor = QtGui.QColor(255, 0, 0)
         self.thickness = LINE_THICKNESS
 
         self.sourceSocket = sourceSocket
@@ -27,15 +26,11 @@ class Connection(QtWidgets.QGraphicsPathItem):
         self.sourcePos = QtCore.QPointF(0, 0)
         self.targetPos = QtCore.QPointF(0, 0)
 
-        self.canDelete = False
-
         self.setAcceptHoverEvents(True)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
 
     def paint(self, painter, option, widget):
-        if self.canDelete:
-            self.setPen(QtGui.QPen(self.deleteColor, self.thickness))
-        elif self.isSelected():
+        if self.isSelected():
             self.setPen(QtGui.QPen(self.selectedColor, self.thickness))
         else:
             self.setPen(QtGui.QPen(self.lineColor, self.thickness))
@@ -54,24 +49,6 @@ class Connection(QtWidgets.QGraphicsPathItem):
             self.targetSocket.connections.remove(self)
 
         self.scene().removeItem(self)
-
-    def hoverEnterEvent(self, event):
-        if QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ControlModifier:
-            self.canDelete = True
-            self.update()
-
-        super().hoverEnterEvent(event)
-
-    def hoverLeaveEvent(self, event):
-        self.canDelete = False
-        self.update()
-
-        super().hoverLeaveEvent(event)
-
-    def mousePressEvent(self, event):
-        if event.button() == QtCore.Qt.MouseButton.LeftButton and self.canDelete:
-            QtWidgets.QApplication.instance().controller.pass_remove_connection(self)
-            self.destroy()
 
     def _repeat_eq(self, other):
         if not isinstance(other, Connection):

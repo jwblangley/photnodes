@@ -39,6 +39,11 @@ class BaseNode(QtWidgets.QGraphicsItem):
         self.setAcceptTouchEvents(True)
         self.setAcceptDrops(True)
 
+    def mousePressEvent(self, event):
+        # Disable multiple selection
+        if event.modifiers() == QtCore.Qt.ControlModifier:
+            event.ignore()
+
     def itemChange(self, change, value):
         if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
             inspector = QtWidgets.QApplication.instance().window.inspector

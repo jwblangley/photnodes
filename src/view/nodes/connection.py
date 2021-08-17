@@ -50,6 +50,11 @@ class Connection(QtWidgets.QGraphicsPathItem):
 
         self.scene().removeItem(self)
 
+    def mousePressEvent(self, event):
+        # Disable multiple selection
+        if event.modifiers() == QtCore.Qt.ControlModifier:
+            event.ignore()
+
     def _repeat_eq(self, other):
         if not isinstance(other, Connection):
             return False

@@ -19,6 +19,8 @@ class NodeCanvas(QtWidgets.QWidget):
         self.scene.selectionChanged.connect(self.selectionChanged)
 
         self.view = QtWidgets.QGraphicsView(self.scene)
+        self.view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.view.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.layout.addWidget(self.view, 0, 0)
 
     def closeEvent(self, event):
@@ -48,7 +50,7 @@ class NodeCanvas(QtWidgets.QWidget):
         self.clearSelection()
         item.setSelected(True)
         if centerInScene:
-            self.scene.setSceneRect(item.sceneBoundingRect())
+            self.view.centerOn(item)
 
     def selectionChanged(self):
         itemSelected = len(self.selectedItems()) > 0

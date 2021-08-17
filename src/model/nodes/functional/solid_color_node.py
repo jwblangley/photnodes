@@ -31,7 +31,9 @@ class SolidColorNode(BaseNode):
         if "gamma" not in dependencies:
             raise NodeProcessError(self, "gamma dependency is not provided")
         if not isinstance(dependencies["gamma"], float):
-            raise NodeProcessError(self, "gamma dependency is not a floating point number")
+            raise NodeProcessError(
+                self, "gamma dependency is not a floating point number"
+            )
 
     def calculate(self, dependencies):
         res = torch.empty(3, self.height, self.width)

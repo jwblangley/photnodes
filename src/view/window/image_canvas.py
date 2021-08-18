@@ -2,6 +2,9 @@ import warnings
 
 from PySide6 import QtCore, QtWidgets, QtGui
 
+from view.theme import theme
+
+
 ZOOM_FACTOR = 1.1
 
 
@@ -17,7 +20,8 @@ class ImageCanvas(QtWidgets.QScrollArea):
 
         self.setWidgetResizable(False)
         self.setAlignment(QtCore.Qt.AlignCenter)
-        self.setStyleSheet("QScrollArea {background-color: #303030}")
+        col = theme.palette["secondary"]
+        self.setStyleSheet(f"QScrollArea {{background-color: {col}}}")
 
         self.label = QtWidgets.QLabel()
         self.label.setSizePolicy(

@@ -5,7 +5,7 @@ from view.nodes.connection import Connection
 
 from view.utils import getTextSize
 
-MARGIN = 5
+from view.theme import theme
 
 
 class Socket(QtWidgets.QGraphicsItem):
@@ -19,16 +19,16 @@ class Socket(QtWidgets.QGraphicsItem):
         self.isInput = isInput
         self.maxConnections = maxConnections
 
-        self.x = 0
-        self.y = 0
-        self.w = 10
-        self.h = 10
+        self.x = theme.unit_width(0)
+        self.y = theme.unit_height(0)
+        self.w = theme.unit_width(2)
+        self.h = theme.unit_height(2)
 
-        self.margin = MARGIN
+        self.margin = theme.spacing(0.5)
 
-        self.labelColor = QtGui.QColor(10, 10, 10)
-        self.fillColor = QtGui.QColor(130, 130, 130)
-        self.highlightColor = QtGui.QColor(255, 255, 0)
+        self.labelColor = QtGui.QColor(theme.palette["secondary_text"])
+        self.fillColor = QtGui.QColor(theme.palette["secondary_dark"])
+        self.highlightColor = QtGui.QColor(theme.palette["highlight"])
 
         self.node = None
         self.connections = []

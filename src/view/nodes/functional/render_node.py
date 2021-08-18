@@ -1,6 +1,7 @@
 from PySide6 import QtWidgets
 from PySide6 import QtGui
 from view.inputs.text_input import TextInput
+from view.nodes.socket import Socket
 
 from view.nodes.terminal_node import TerminalNode
 
@@ -22,6 +23,7 @@ class RenderNode(TerminalNode):
         self.gamma = DEFAULT_GAMMA
 
         # Define node
+        self.addSocket(Socket("test", "test", True, 1))
 
         # Define inspector widget
         self.inspectorWidget = QtWidgets.QWidget()

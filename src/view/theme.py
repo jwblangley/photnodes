@@ -2,8 +2,10 @@ import os
 
 
 SPACING = 10
+UNIT_HEIGHT = 5
+UNIT_WIDTH = 5
 
-DEFAULT_QT_MATERIAL_THEME = "neutral_dark.xml"
+DEFAULT_QT_MATERIAL_THEME = "neutral_light.xml"
 
 
 class _Theme:
@@ -19,10 +21,17 @@ class _Theme:
             "secondary_light": os.environ["QTMATERIAL_SECONDARYLIGHTCOLOR"],
             "secondary_dark": os.environ["QTMATERIAL_SECONDARYDARKCOLOR"],
             "secondary_text": os.environ["QTMATERIAL_SECONDARYTEXTCOLOR"],
+            "highlight": "#80deea",
         }
 
     def spacing(self, factor):
         return SPACING * factor
+
+    def unit_height(self, factor):
+        return UNIT_HEIGHT * factor
+
+    def unit_width(self, factor):
+        return UNIT_WIDTH * factor
 
 
 theme = _Theme()

@@ -4,8 +4,7 @@ from PySide6 import QtCore
 
 from view.utils import getTextSize
 
-MARGIN = 5
-ROUNDNESS = 0
+from view.theme import theme
 
 
 class BaseNode(QtWidgets.QGraphicsItem):
@@ -14,15 +13,15 @@ class BaseNode(QtWidgets.QGraphicsItem):
 
         self.title = title
 
-        self.x = 0
-        self.y = 0
-        self.w = 10
-        self.h = 10
+        self.x = theme.unit_width(0)
+        self.y = theme.unit_height(0)
+        self.w = theme.unit_width(2)
+        self.h = theme.unit_height(2)
 
-        self.margin = MARGIN
-        self.roundness = ROUNDNESS
+        self.margin = theme.spacing(0.5)
+        self.roundness = theme.unit_width(0)
 
-        self.fillColor = QtGui.QColor(220, 220, 220)
+        self.fillColor = QtGui.QColor(theme.palette["secondary_dark"])
 
         self.header = None
         self.sockets = {}

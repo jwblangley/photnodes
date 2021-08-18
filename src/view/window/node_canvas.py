@@ -4,6 +4,8 @@ from PySide6 import QtGui
 
 from view.nodes.functional.render_node import RenderNode
 
+from view.theme import theme
+
 ZOOM_FACTOR = 1.1
 
 
@@ -19,6 +21,9 @@ class NodeCanvas(QtWidgets.QWidget):
         self.scene.selectionChanged.connect(self.selectionChanged)
 
         self.view = QtWidgets.QGraphicsView(self.scene)
+        col = theme.palette["secondary"]
+        self.view.setStyleSheet(f"QGraphicsView {{background-color: {col}}}")
+
         self.view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.view.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.layout.addWidget(self.view, 0, 0)

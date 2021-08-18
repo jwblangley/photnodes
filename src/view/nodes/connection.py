@@ -2,6 +2,9 @@ from PySide6 import QtWidgets
 from PySide6 import QtGui
 from PySide6 import QtCore
 
+from view.theme import theme
+
+
 LINE_THICKNESS = 2
 
 CURVE1 = 0.6
@@ -16,8 +19,8 @@ class Connection(QtWidgets.QGraphicsPathItem):
 
         self.setCursor(QtCore.Qt.PointingHandCursor)
 
-        self.lineColor = QtGui.QColor(10, 10, 10)
-        self.selectedColor = QtGui.QColor(0, 0, 255)
+        self.lineColor = QtGui.QColor(theme.palette["primary"])
+        self.selectedColor = QtGui.QColor(theme.palette["highlight"])
         self.thickness = LINE_THICKNESS
 
         self.sourceSocket = sourceSocket

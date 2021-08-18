@@ -4,11 +4,14 @@ from PySide6 import QtCore
 
 from view.utils import getTextSize
 
-DISPLAY_ICON_WIDTH = 30
-DISPLAY_ICON_HEIGHT = 10
-DISPLAY_ICON_RADIUS = 8
+from view.theme import theme
 
-HEIGHT = 20
+
+DISPLAY_ICON_WIDTH = theme.unit_width(6)
+DISPLAY_ICON_HEIGHT = theme.unit_height(2)
+DISPLAY_ICON_RADIUS = theme.unit_height(2) - 2
+
+HEIGHT = theme.unit_height(4)
 
 
 class Header(QtWidgets.QGraphicsItem):
@@ -19,10 +22,12 @@ class Header(QtWidgets.QGraphicsItem):
         self.text = text
 
         self.h = HEIGHT
-        self.fillColor = QtGui.QColor(90, 90, 90)
-        self.textColor = QtGui.QColor(240, 240, 240)
-        self.noDisplayIconColor = QtGui.QColor(64, 64, 64)
-        self.displayIconColor = QtGui.QColor(240, 240, 240)
+        self.fillColor = QtGui.QColor(theme.palette["primary"])
+        self.textColor = QtGui.QColor(theme.palette["primary_text"])
+        self.selectTextColor = QtGui.QColor(theme.palette["highlight"])
+        self.displayIconBackgroundColor = QtGui.QColor(theme.palette["primary"])
+        self.noDisplayIconColor = QtGui.QColor(theme.palette["secondary"])
+        self.displayIconColor = QtGui.QColor(theme.palette["highlight"])
 
         self.displayedLeft = False
         self.displayedRight = False
@@ -50,6 +55,7 @@ class Header(QtWidgets.QGraphicsItem):
             x = self.x() + width - DISPLAY_ICON_WIDTH
             y = self.y() - DISPLAY_ICON_HEIGHT
             bbox = QtCore.QRect(x, y, DISPLAY_ICON_WIDTH, DISPLAY_ICON_HEIGHT)
+            painter.setBrush(QtGui.QBrush(self.displayIconBackgroundColor))
             painter.drawRoundedRect(bbox, self.node.roundness, self.node.roundness)
 
             displayBrush = QtGui.QBrush(self.displayIconColor)
@@ -74,7 +80,7 @@ class Header(QtWidgets.QGraphicsItem):
 
         # Paint text
         if self.node.isSelected():
-            painter.setPen(QtGui.QPen(QtGui.QColor(0, 0, 255)))
+            painter.setPen(QtGui.QPen(self.selectTextColor))
         else:
             painter.setPen(QtGui.QPen(self.textColor))
 

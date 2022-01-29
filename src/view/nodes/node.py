@@ -108,7 +108,7 @@ class BaseNode(QtWidgets.QGraphicsItem):
         inspector.titleLabel.setText("Inspector")
 
     def getWidth(self):
-        headerWidth = self.margin + getTextSize(self.header.text).width()
+        headerWidth = 2 * self.margin + getTextSize(self.header.text).width()
         return max(
             [headerWidth]
             + [

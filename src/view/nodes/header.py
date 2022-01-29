@@ -65,8 +65,8 @@ class Header(QtWidgets.QGraphicsItem):
             painter.drawEllipse(
                 x + (DISPLAY_ICON_WIDTH - DISPLAY_ICON_RADIUS * 2) / 3,
                 y + (DISPLAY_ICON_HEIGHT - DISPLAY_ICON_RADIUS) / 2,
-                8,
-                8,
+                theme.unit_width(8 / 5),
+                theme.unit_width(8 / 5),
             )
             painter.setBrush(displayBrush if self.displayedRight else noDisplayBrush)
             painter.drawEllipse(
@@ -74,8 +74,8 @@ class Header(QtWidgets.QGraphicsItem):
                 + DISPLAY_ICON_RADIUS
                 + 2 * (DISPLAY_ICON_WIDTH - DISPLAY_ICON_RADIUS * 2) / 3,
                 y + (DISPLAY_ICON_HEIGHT - DISPLAY_ICON_RADIUS) / 2,
-                8,
-                8,
+                theme.unit_width(8 / 5),
+                theme.unit_width(8 / 5),
             )
 
         # Paint text

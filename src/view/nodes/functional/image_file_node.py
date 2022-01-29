@@ -13,7 +13,7 @@ class ImageFileNode(StartingNode):
         super().__init__(ImageFileNode.TITLE, **kwargs)
 
         # Define vars
-        self.allVars = ["path"]
+        self.attributeVars = ["path"]
 
         self.path = ""
 

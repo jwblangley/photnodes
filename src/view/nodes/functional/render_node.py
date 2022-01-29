@@ -18,7 +18,7 @@ class RenderNode(TerminalNode):
         super().__init__(RenderNode.TITLE, **kwargs)
 
         # Define vars
-        self.allVars = ["gamma"]
+        self.attributeVars = ["gamma"]
 
         self.gamma = DEFAULT_GAMMA
 

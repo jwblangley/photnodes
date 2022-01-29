@@ -86,7 +86,7 @@ class Header(QtWidgets.QGraphicsItem):
 
         textSize = getTextSize(self.text, painter=painter)
         painter.drawText(
-            self.x() + self.node.margin,
+            self.x() + self.node.padding,
             self.y() + (self.h + textSize.height() / 2) / 2,
             self.text,
         )

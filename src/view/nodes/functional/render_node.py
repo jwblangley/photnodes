@@ -23,7 +23,7 @@ class RenderNode(TerminalNode):
         self.gamma = DEFAULT_GAMMA
 
         # Define node
-        self.addSocket(Socket("test", "test", True, 1))
+        self.addSocket(Socket("test", "testing testing 12 12", True, 1))
 
         # Define inspector widget
         self.inspectorWidget = QtWidgets.QWidget()

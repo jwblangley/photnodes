@@ -18,7 +18,7 @@ class BaseNode(QtWidgets.QGraphicsItem):
         self.w = theme.unit_width(2)
         self.h = theme.unit_height(2)
 
-        self.margin = theme.spacing(0.5)
+        self.padding = theme.spacing(0.5)
         self.roundness = theme.unit_width(0)
 
         self.fillColor = QtGui.QColor(theme.palette["secondary_dark"])
@@ -93,13 +93,12 @@ class BaseNode(QtWidgets.QGraphicsItem):
         return (
             sum(
                 [
-                    s.h + s.margin
+                    s.h + 2 * self.padding
                     for s in self.sockets.values()
                     if not s.name.startswith("_")
                 ]
             )
             + self.header.h
-            + self.margin
         )
 
     def onDeselect(self):
@@ -108,11 +107,11 @@ class BaseNode(QtWidgets.QGraphicsItem):
         inspector.titleLabel.setText("Inspector")
 
     def getWidth(self):
-        headerWidth = 2 * self.margin + getTextSize(self.header.text).width()
+        headerWidth = getTextSize(self.header.text).width() + 2 * self.padding
         return max(
             [headerWidth]
             + [
-                s.w + s.margin + getTextSize(s.displayName).width()
+                getTextSize(s.displayName).width() + 2 * self.padding
                 for s in self.sockets.values()
             ]
         )
@@ -122,14 +121,10 @@ class BaseNode(QtWidgets.QGraphicsItem):
 
         yOffset = self.getHeight()
 
+        socket.setY(yOffset + self.padding)
         socket.setParentItem(self)
         socket.node = self
         self.sockets[socket.name] = socket
-
-        if socket.isInput:
-            socket.setY(yOffset)
-        else:
-            socket.setY(yOffset)
 
         self.updateSize()
 

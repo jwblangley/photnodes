@@ -19,12 +19,10 @@ class Socket(QtWidgets.QGraphicsItem):
         self.isInput = isInput
         self.maxConnections = maxConnections
 
-        self.x = theme.unit_width(0)
-        self.y = theme.unit_height(0)
+        self.x = 0
+        self.y = 0
         self.w = theme.unit_width(2)
         self.h = theme.unit_height(2)
-
-        self.margin = theme.spacing(0.5)
 
         self.labelColor = QtGui.QColor(theme.palette["secondary_text"])
         self.fillColor = QtGui.QColor(theme.palette["secondary_dark"])
@@ -56,9 +54,9 @@ class Socket(QtWidgets.QGraphicsItem):
         # Paint text
         textSize = getTextSize(self.displayName, painter=painter)
         if self.isInput:
-            x = bbox.right() + self.margin
+            x = bbox.right() + self.node.padding
         else:
-            x = bbox.left() - self.margin - textSize.width()
+            x = bbox.left() - self.node.padding - textSize.width()
         y = bbox.bottom()
 
         painter.setPen(QtGui.QPen(self.labelColor))

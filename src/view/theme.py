@@ -5,7 +5,7 @@ SPACING = 10
 UNIT_HEIGHT = 5
 UNIT_WIDTH = 5
 
-DEFAULT_QT_MATERIAL_THEME = "neutral_light.xml"
+DEFAULT_QT_MATERIAL_THEME = "neutral_dark.xml"
 
 
 class _Theme:
